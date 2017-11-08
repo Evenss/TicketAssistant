@@ -30,8 +30,8 @@
             android:screenOrientation="portrait"
             android:theme="@style/CityPicker.NoActionBar"
             android:windowSoftInputMode="stateHidden|adjustPan" />
-
-        <activity android:name=".activity.TicketShowActivity"/>
+        <activity android:name=".activity.TicketShowActivity" />
+        <activity android:name=".activity.ChangePwdActivity"></activity>
     </application>
 
 </manifest>

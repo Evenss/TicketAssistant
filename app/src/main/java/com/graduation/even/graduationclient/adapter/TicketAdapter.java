@@ -54,7 +54,6 @@ public class TicketAdapter extends RecyclerView.Adapter<TicketAdapter.MyViewHold
         private TextView interval;
         private TextView price;
         private CheckBox selected;
-
         private TextView seatType1;
         private TextView seatType2;
         private TextView seatType3;

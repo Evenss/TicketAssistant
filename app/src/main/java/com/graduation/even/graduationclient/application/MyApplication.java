@@ -2,6 +2,9 @@ package com.graduation.even.graduationclient.application;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.Intent;
+
+import com.graduation.even.graduationclient.activity.LoginActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,9 +31,9 @@ public class MyApplication extends Application{
     public void backToLoginActivity(){
         removeAll();
 
-//        Intent intent = new Intent(this, LoginActivity.class);
-//        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//        startActivity(intent);
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
     public void removeAll(){
         for (Activity activity : activityList){

@@ -6,15 +6,21 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
+import com.graduation.even.graduationclient.application.MyApplication;
+
 public abstract class BaseActivity extends AppCompatActivity {
 
     private static Toast toast;
+    private MyApplication myApplication;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getResourceId());
-        
+
+        myApplication = (MyApplication) getApplication();
+        myApplication.addActivity(this);
+
         if (forceScreenOrientationPortrait()){
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
@@ -22,6 +28,12 @@ public abstract class BaseActivity extends AppCompatActivity {
         initView();
         initData();
         initEvent();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        myApplication.removeActivity(this);
     }
 
     //是否要强制竖屏SCREEN_ORIENTATION_PORTRAIT
@@ -47,5 +59,10 @@ public abstract class BaseActivity extends AppCompatActivity {
             toast.setText(content);
         }
         toast.show();
+    }
+
+    //退回到登录页面
+    public void backToLogin(){
+        myApplication.backToLoginActivity();
     }
 }

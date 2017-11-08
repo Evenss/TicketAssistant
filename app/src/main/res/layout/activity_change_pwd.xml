@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.graduation.even.graduationclient.activity.ChangePwdActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimaryDark"
+        app:navigationIcon="@mipmap/icon_back"
+        android:fitsSystemWindows="true">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:text="修改密码"
+            android:textColor="@android:color/white"
+            android:textSize="21sp" />
+
+    </android.support.v7.widget.Toolbar>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="15sp"
+        android:paddingLeft="25dp"
+        android:layout_marginTop="20dp"
+        android:text="旧密码："/>
+    <EditText
+        android:id="@+id/et_old_pwd"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:paddingLeft="10dp"
+        android:hint="请输入原始密码"
+        android:singleLine="true"
+        android:textSize="14sp"
+        android:background="@drawable/bg_change_pwd_gray"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="15sp"
+        android:paddingLeft="25dp"
+        android:layout_marginTop="10dp"
+        android:text="新密码："/>
+    <EditText
+        android:id="@+id/et_new_pwd"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:paddingLeft="10dp"
+        android:hint="请输入新密码"
+        android:singleLine="true"
+        android:textSize="14sp"
+        android:background="@drawable/bg_change_pwd_gray"/>
+
+    <Button
+        android:id="@+id/btn_change_pwd"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:text="确认更改"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        android:backgroundTint="@color/colorPrimary"/>
+
+</LinearLayout>

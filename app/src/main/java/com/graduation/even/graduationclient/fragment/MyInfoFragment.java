@@ -7,7 +7,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.graduation.even.graduationclient.R;
+import com.graduation.even.graduationclient.activity.ChangePwdActivity;
 import com.graduation.even.graduationclient.activity.LoginActivity;
+import com.graduation.even.graduationclient.activity.MainActivity;
 import com.graduation.even.graduationclient.util.PLog;
 
 import static android.app.Activity.RESULT_OK;
@@ -19,7 +21,7 @@ import static android.app.Activity.RESULT_OK;
 public class MyInfoFragment extends BaseFragment implements View.OnClickListener{
 
     private RelativeLayout loginPromptRl,changePwdRl,orderInfoRl,moreRl;
-    private Button loginBtn;
+    private Button loginBtn,logoutBtn;
     private TextView phoneTv;
 
     private final static int LOGIN_REQUEST_CODE = 1;
@@ -37,6 +39,7 @@ public class MyInfoFragment extends BaseFragment implements View.OnClickListener
     void initView(View view) {
         loginPromptRl = view.findViewById(R.id.rl_login_prompt);
         loginBtn = view.findViewById(R.id.btn_login);
+        logoutBtn = view.findViewById(R.id.btn_logout);
         phoneTv = view.findViewById(R.id.tv_phone);
         changePwdRl = view.findViewById(R.id.rl_change_pwd);
         orderInfoRl = view.findViewById(R.id.rl_order_info);
@@ -51,6 +54,7 @@ public class MyInfoFragment extends BaseFragment implements View.OnClickListener
     @Override
     void initEvent() {
         loginBtn.setOnClickListener(this);
+        logoutBtn.setOnClickListener(this);
         changePwdRl.setOnClickListener(this);
         orderInfoRl.setOnClickListener(this);
         moreRl.setOnClickListener(this);
@@ -63,7 +67,12 @@ public class MyInfoFragment extends BaseFragment implements View.OnClickListener
                 Intent intent = new Intent(getActivity(), LoginActivity.class);
                 startActivityForResult(intent,LOGIN_REQUEST_CODE);
                 break;
+            case R.id.btn_logout:
+                logout();
+                break;
             case R.id.rl_change_pwd:
+                intent = new Intent(getActivity(), ChangePwdActivity.class);
+                startActivity(intent);
                 break;
             case R.id.rl_order_info:
                 break;
@@ -88,4 +97,15 @@ public class MyInfoFragment extends BaseFragment implements View.OnClickListener
             }
         }
     }
+
+    // todo 网络请求
+    private void logout(){
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ((MainActivity) getActivity()).backToLogin();
+            }
+        });
+    }
+
 }
