@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--<color name="colorPrimary">#3F51B5</color>-->
+    <!--<color name="colorPrimaryDark">#303F9F</color>-->
+    <!--<color name="colorAccent">#FF4081</color>-->
+    <color name="colorPrimary">#3089FF</color>
+    <color name="colorPrimaryDark">#3082FF</color>
+    <color name="colorAccent">#308EFF</color>
+    <color name="white">#ffffff</color>
+    <color name="black">#000000</color>
+    <color name="transparent">#00FFFFFF</color>
+    <color name="gray">#F6F6F6</color>
+
+
+    <!-- 登录 -->
+    <color name="loginGray">#F6F6F6</color>
+    <color name="loginDeepGray">#8E8A8A</color>
+    <color name="loginTextBlue">#308EFF</color>
+
+    <!-- 主页面 -->
+    <color name="mainBottomSelectedText">#ffffff</color>
+    <color name="mainBottomNormalText">#A3BDE9</color>  <!-- 浅蓝 -->
+
+    <!-- Home -->
+    <color name="homeGray">#B4B4B4</color>
+
+    <!-- 抢票界面 -->
+    <color name="lineGray">#B4B4B4</color>
+</resources>

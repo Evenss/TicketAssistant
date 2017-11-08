@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.graduation.even.graduationclient.activity.TicketShowActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimaryDark"
+        app:navigationIcon="@mipmap/icon_back"
+        android:fitsSystemWindows="true">
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:text="成都——上海"
+            android:textColor="@android:color/white"
+            android:textSize="21sp" />
+
+        <Button
+            android:id="@+id/btn_set_monitor"
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:text="抢票"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:layout_gravity="right"
+            android:background="@color/transparent"/>
+
+    </android.support.v7.widget.Toolbar>
+
+    <TextView
+        android:id="@+id/tv_date_prompt"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:text="选票日期：11月08日 星期二"
+        android:textSize="16sp"
+        android:textColor="@color/white"
+        android:gravity="center"
+        android:background="@color/colorPrimaryDark"/>
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_ticket_show"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+
+
+</LinearLayout>
