@@ -70,15 +70,15 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                 String phone = phoneEt.getText().toString();
                 String pwd = setPwdEt.getText().toString();
                 if(!isPhoneLegal(phone)){
-                    ToastUtil.showToast(RegisterActivity.this,"输入手机号不合法！");
+                    phoneEt.setError("输入手机号不合法！");
                     return;
                 }
                 if(checkCodeEt.getText().toString() != mCode){
-                    ToastUtil.showToast(RegisterActivity.this,"验证码不正确！");
+                    checkCodeEt.setError("验证码不正确！");
                     return;
                 }
                 if(confirmPwdEt.getText().toString() != pwd){
-                    ToastUtil.showToast(RegisterActivity.this,"两次输入密码不一致！");
+                    confirmPwdEt.setError("两次输入密码不一致！");
                     return;
                 }
                 registerAccount(phone,pwd);

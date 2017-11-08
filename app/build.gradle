@@ -33,5 +33,7 @@ dependencies {
     compile 'com.github.flavienlaurent.datetimepicker:library:0.0.2'
     compile 'com.zaaach:citypicker:1.2'
     compile 'de.hdodenhof:circleimageview:2.2.0'
+    compile 'com.squareup.okhttp3:okhttp:3.7.0'
+    compile 'com.google.code.gson:gson:2.8.0'
     testCompile 'junit:junit:4.12'
 }
