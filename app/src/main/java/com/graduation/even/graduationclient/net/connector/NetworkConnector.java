@@ -48,6 +48,7 @@ public class NetworkConnector {
         mUserInfo = UserInfo.getInstance();
     }
 
+    // 登录
     public void login(String phone, String pwd, final NetCallBack callBack) {
         PLog.i("login, url is " + API.URL_LOGIN);
         pwd = MD5Util.encoderByMd5(pwd);
@@ -63,7 +64,7 @@ public class NetworkConnector {
         call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                PLog.i("failed to login" + e);
+                PLog.i("failed to login:" + e);
                 callBack.onNetworkError();
             }
 
@@ -73,10 +74,15 @@ public class NetworkConnector {
                 PLog.i("login, response is " + string);
                 LoginResponse loginResponse = mGson.fromJson(string, LoginResponse.class);
                 if (loginResponse.isSuccess()) {
-                    mUserInfo.setInfo(loginResponse.data.userId, loginResponse.data.token, loginResponse.data.email, loginResponse.data.invalidTime);
+                    PLog.i("success to login");
+                    mUserInfo.setInfo(loginResponse.data.userId, loginResponse.data.token,
+                            loginResponse.data.phone, loginResponse.data.email,
+                            loginResponse.data.invalidTime);
                     callBack.onSuccess(null);
-                } else
+                } else {
+                    PLog.i("failed to login:" + loginResponse.error);
                     callBack.onFailed(loginResponse.error);
+                }
             }
         });
     }

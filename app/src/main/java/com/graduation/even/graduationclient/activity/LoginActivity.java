@@ -14,6 +14,8 @@ import com.graduation.even.graduationclient.net.bean.response.LoginResponse;
 import com.graduation.even.graduationclient.net.callback.NetCallBack;
 import com.graduation.even.graduationclient.net.connector.NetworkConnector;
 import com.graduation.even.graduationclient.util.PLog;
+import com.graduation.even.graduationclient.util.SharedPreferencesUtil;
+import com.graduation.even.graduationclient.util.ToastUtil;
 import com.graduation.even.graduationclient.util.ToolbarUtil;
 
 public class LoginActivity extends BaseActivity implements View.OnClickListener {
@@ -26,7 +28,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     private ProgressBar progressBar;
 
     private NetworkConnector mNetworkConnector;
-    private boolean isLogingin = false;
+    private SharedPreferencesUtil mSPUtil;
+    private boolean isLoggingIn = false;
     @Override
     protected boolean forceScreenOrientationPortrait() {
         return false;
@@ -50,6 +53,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     @Override
     protected void initData() {
         mNetworkConnector = NetworkConnector.getInstance();
+        mSPUtil = SharedPreferencesUtil.getInstance(this);
     }
 
     @Override
@@ -84,29 +88,36 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         }
     }
 
-    // todo
     /* 登录网络请求 */
-    private void attemptLogin(String phone, String pwd) {
+    private void attemptLogin(final String phone,final String pwd) {
 
-        if (isLogingin)
+        if (isLoggingIn)
             return;
         else
-            isLogingin = true;
+            isLoggingIn = true;
 
         showProgress(true);
         mNetworkConnector.login(phone, pwd, new NetCallBack() {
             @Override
             public void onNetworkError() {
-
-            }
-
-            @Override
-            public void onFailed(String error) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         showProgress(false);
-                        isLogingin = false;
+                        isLoggingIn = false;
+                        ToastUtil.showToast(LoginActivity.this,"网络错误");
+                    }
+                });
+            }
+
+            @Override
+            public void onFailed(final String error) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        showProgress(false);
+                        isLoggingIn = false;
+                        ToastUtil.showToast(LoginActivity.this,error);
                     }
                 });
             }
@@ -117,9 +128,10 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     @Override
                     public void run() {
                         showProgress(false);
-                        isLogingin = false;
-                        //todo 向本地文件中写入数据
-
+                        isLoggingIn = false;
+                        //向本地文件中写入数据
+                        mSPUtil.writePhone(phone);
+                        mSPUtil.writePassword(pwd);
                         // 开启下一个活动
                         Intent intent = getIntent();
                         intent.putExtra("isLogin",true);
