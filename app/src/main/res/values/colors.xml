@@ -11,6 +11,7 @@
     <color name="transparent">#00FFFFFF</color>
     <color name="gray">#F6F6F6</color>
     <color name="grayDark">#B4B4B4</color>
+    <color name="grayDarkDark">#A9A9A9</color>
 
 
     <!-- 登录 -->

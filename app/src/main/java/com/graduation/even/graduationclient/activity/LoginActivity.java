@@ -13,6 +13,7 @@ import com.graduation.even.graduationclient.R;
 import com.graduation.even.graduationclient.net.bean.response.LoginResponse;
 import com.graduation.even.graduationclient.net.callback.NetCallBack;
 import com.graduation.even.graduationclient.net.connector.NetworkConnector;
+import com.graduation.even.graduationclient.util.MD5Util;
 import com.graduation.even.graduationclient.util.PLog;
 import com.graduation.even.graduationclient.util.SharedPreferencesUtil;
 import com.graduation.even.graduationclient.util.ToastUtil;
@@ -32,6 +33,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     private boolean isLoggingIn = false;
 
     private final static int REGISTER_REQUEST_CODE = 2;
+
     @Override
     protected boolean forceScreenOrientationPortrait() {
         return false;
@@ -62,7 +64,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     protected void initEvent() {
         loginBtn.setOnClickListener(this);
         registerBtn.setOnClickListener(this);
-        new ToolbarUtil().initToolbar(this,mToolbar);
+        new ToolbarUtil().initToolbar(this, mToolbar);
     }
 
     @Override
@@ -70,17 +72,17 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         switch (view.getId()) {
             case R.id.btn_register:
                 Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-                startActivityForResult(intent,REGISTER_REQUEST_CODE);
+                startActivityForResult(intent, REGISTER_REQUEST_CODE);
                 break;
             case R.id.btn_login:
                 String phone = phoneEt.getText().toString();
                 String pwd = pwdEt.getText().toString();
-                if(TextUtils.isEmpty(phone)){
+                if (TextUtils.isEmpty(phone)) {
                     PLog.w("phone is empty");
                     phoneEt.setError("账户不能为空");
                     return;
                 }
-                if(TextUtils.isEmpty(pwd)){
+                if (TextUtils.isEmpty(pwd)) {
                     PLog.w("pwd is empty");
                     pwdEt.setError("密码不能为空");
                     return;
@@ -91,7 +93,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     }
 
     /* 登录网络请求 */
-    private void attemptLogin(final String phone,final String pwd) {
+    private void attemptLogin(final String phone, final String pwd) {
 
         if (isLoggingIn)
             return;
@@ -99,7 +101,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             isLoggingIn = true;
 
         showProgress(true);
-        mNetworkConnector.login(phone, pwd, new NetCallBack() {
+        final String pwdMD5 = MD5Util.encoderByMd5(pwd);
+        mNetworkConnector.login(phone, pwdMD5, new NetCallBack() {
             @Override
             public void onNetworkError() {
                 runOnUiThread(new Runnable() {
@@ -107,7 +110,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     public void run() {
                         showProgress(false);
                         isLoggingIn = false;
-                        ToastUtil.showToast(LoginActivity.this,"网络错误");
+                        ToastUtil.showToast(LoginActivity.this, "网络错误");
                     }
                 });
             }
@@ -119,7 +122,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     public void run() {
                         showProgress(false);
                         isLoggingIn = false;
-                        ToastUtil.showToast(LoginActivity.this,error);
+                        ToastUtil.showToast(LoginActivity.this, error);
                     }
                 });
             }
@@ -133,11 +136,11 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                         isLoggingIn = false;
                         //向本地文件中写入数据
                         mSPUtil.writePhone(phone);
-                        mSPUtil.writePassword(pwd);
+                        mSPUtil.writePassword(pwdMD5);
                         // 开启下一个活动
                         Intent intent = getIntent();
-                        intent.putExtra("isLogin",true);
-                        setResult(RESULT_OK,intent);
+                        intent.putExtra("isLogin", true);
+                        setResult(RESULT_OK, intent);
                         finish();
                     }
                 });
@@ -155,12 +158,12 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(resultCode == RESULT_OK){
+        if (resultCode == RESULT_OK) {
             PLog.i("onActivityResult RESULT_OK");
-            switch (requestCode){
+            switch (requestCode) {
                 case REGISTER_REQUEST_CODE:
                     PLog.i("REGISTER_REQUEST_CODE");
-                    if(data != null && data.getBooleanExtra("isRegister",false)){
+                    if (data != null && data.getBooleanExtra("isRegister", false)) {
                         finish();//用户已经注册，跳过登录
                     }
                     break;

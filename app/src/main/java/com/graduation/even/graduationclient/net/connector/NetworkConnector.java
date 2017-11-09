@@ -2,10 +2,12 @@ package com.graduation.even.graduationclient.net.connector;
 
 import com.google.gson.Gson;
 import com.graduation.even.graduationclient.constant.API;
+import com.graduation.even.graduationclient.net.bean.request.ChangePwdRequest;
 import com.graduation.even.graduationclient.net.bean.request.LoginRequest;
 import com.graduation.even.graduationclient.net.bean.request.LogoutRequest;
 import com.graduation.even.graduationclient.net.bean.request.RegisterRequest;
 import com.graduation.even.graduationclient.net.bean.request.SetEmailRequest;
+import com.graduation.even.graduationclient.net.bean.response.ChangePwdResponse;
 import com.graduation.even.graduationclient.net.bean.response.LoginResponse;
 import com.graduation.even.graduationclient.net.bean.response.LogoutResponse;
 import com.graduation.even.graduationclient.net.bean.response.RegisterResponse;
@@ -57,14 +59,14 @@ public class NetworkConnector {
     // 登录
     public void login(String phone, String pwd, final NetCallBack callBack) {
         PLog.i("login, url is " + API.URL_LOGIN);
-        pwd = MD5Util.encoderByMd5(pwd);
-        PLog.i("encoded password " + pwd);
+
         LoginRequest loginRequest = new LoginRequest(phone, pwd);
         RequestBody body = RequestBody.create(JSON, mGson.toJson(loginRequest));
         Request request = new Request.Builder()
                 .url(API.URL_LOGIN)
                 .post(body)
                 .build();
+
         Call call = mClient.newCall(request);
         PLog.i("do enqueue");
         call.enqueue(new Callback() {
@@ -96,14 +98,14 @@ public class NetworkConnector {
     // 注册
     public void register(String phone, String pwd, final NetCallBack callBack) {
         PLog.i("register, url is " + API.URL_REGISTER);
-        pwd = MD5Util.encoderByMd5(pwd);
-        PLog.i("encoded password " + pwd);
+
         RegisterRequest registerRequest = new RegisterRequest(phone, pwd);
         RequestBody body = RequestBody.create(JSON, mGson.toJson(registerRequest));
         Request request = new Request.Builder()
                 .url(API.URL_REGISTER)
                 .post(body)
                 .build();
+
         Call call = mClient.newCall(request);
         PLog.i("do enqueue");
         call.enqueue(new Callback() {
@@ -134,6 +136,7 @@ public class NetworkConnector {
     //登出
     public void logout(final NetCallBack callBack) {
         PLog.i("logout, url is " + API.URL_LOGOUT);
+
         String token = UserInfo.getInstance().getToken();
         LogoutRequest logoutRequest = new LogoutRequest(token);
         RequestBody body = RequestBody.create(JSON, mGson.toJson(logoutRequest));
@@ -141,6 +144,7 @@ public class NetworkConnector {
                 .url(API.URL_LOGOUT)
                 .post(body)
                 .build();
+
         Call call = mClient.newCall(request);
         PLog.i("do enqueue");
         call.enqueue(new Callback() {
@@ -169,6 +173,7 @@ public class NetworkConnector {
     //设置邮箱
     public void setEmail(String email, final NetCallBack callBack) {
         PLog.i("set email, url is " + API.URL_SET_EMAIL);
+
         String token = UserInfo.getInstance().getToken();
         int userId = UserInfo.getInstance().getUserId();
         SetEmailRequest setEmailRequest = new SetEmailRequest(token, userId, email);
@@ -177,6 +182,7 @@ public class NetworkConnector {
                 .url(API.URL_SET_EMAIL)
                 .post(body)
                 .build();
+
         Call call = mClient.newCall(request);
         PLog.i("do enqueue");
         call.enqueue(new Callback() {
@@ -197,6 +203,45 @@ public class NetworkConnector {
                 } else {
                     PLog.i("failed to set email:" + setEmailResponse.error);
                     callBack.onFailed(setEmailResponse.error);
+                }
+            }
+        });
+    }
+
+    //修改密码
+    public void changePwd(String oldPwd, String newPwd, final NetCallBack callBack) {
+        PLog.i("change pwd, url is " + API.URL_CHANGE_PWD);
+
+        String token = UserInfo.getInstance().getToken();
+        int userId = UserInfo.getInstance().getUserId();
+        ChangePwdRequest changePwdRequest = new ChangePwdRequest(token, userId, oldPwd, newPwd);
+
+        RequestBody body = RequestBody.create(JSON, mGson.toJson(changePwdRequest));
+        Request request = new Request.Builder()
+                .url(API.URL_CHANGE_PWD)
+                .post(body)
+                .build();
+
+        Call call = mClient.newCall(request);
+        PLog.i("do enqueue");
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                PLog.i("failed to change pwd:" + e);
+                callBack.onNetworkError();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String string = response.body().string();
+                PLog.i("change pwd, response is " + string);
+                ChangePwdResponse changePwdResponse = mGson.fromJson(string, ChangePwdResponse.class);
+                if (changePwdResponse.isSuccess()) {
+                    PLog.i("success to change pwd");
+                    callBack.onSuccess(null);
+                } else {
+                    PLog.i("failed to change pwd:" + changePwdResponse.error);
+                    callBack.onFailed(changePwdResponse.error);
                 }
             }
         });

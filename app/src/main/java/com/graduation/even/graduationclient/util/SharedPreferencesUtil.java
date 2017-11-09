@@ -23,9 +23,7 @@ public class SharedPreferencesUtil {
     }
 
     public static SharedPreferencesUtil getInstance(Context context) {
-        if (null == mInstance) {
-            mInstance = new SharedPreferencesUtil(context);
-        }
+        mInstance = new SharedPreferencesUtil(context);
         return mInstance;
     }
 
@@ -54,4 +52,5 @@ public class SharedPreferencesUtil {
         mSharedPreferences = null;
         mInstance = null;
     }
+
 }

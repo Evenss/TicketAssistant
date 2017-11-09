@@ -17,5 +17,6 @@ public class API {
     public static String URL_LOGOUT = HOST + "/user/logout";
     public static String URL_REGISTER = HOST + "/user/register";
     public static String URL_SET_EMAIL = HOST + "/user/set_email";
+    public static String URL_CHANGE_PWD = HOST + "/user/change_pwd";
     public static String URL_TICKET_QUERY = HOST + "/ticket/query";
 }

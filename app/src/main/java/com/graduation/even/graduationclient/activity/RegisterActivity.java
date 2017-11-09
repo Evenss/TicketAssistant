@@ -11,6 +11,7 @@ import android.widget.ProgressBar;
 import com.graduation.even.graduationclient.R;
 import com.graduation.even.graduationclient.net.callback.NetCallBack;
 import com.graduation.even.graduationclient.net.connector.NetworkConnector;
+import com.graduation.even.graduationclient.util.MD5Util;
 import com.graduation.even.graduationclient.util.SharedPreferencesUtil;
 import com.graduation.even.graduationclient.util.ToastUtil;
 import com.graduation.even.graduationclient.util.ToolbarUtil;
@@ -122,8 +123,8 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
             isRegistering = true;
 
         showProgress(true);
-
-        mNetworkConnector.register(phone, pwd, new NetCallBack() {
+        final String pwdMD5 = MD5Util.encoderByMd5(pwd);
+        mNetworkConnector.register(phone, pwdMD5, new NetCallBack() {
             @Override
             public void onNetworkError() {
                 runOnUiThread(new Runnable() {
@@ -157,7 +158,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                         isRegistering = false;
                         //向本地文件中写入数据
                         mSPUtil.writePhone(phone);
-                        mSPUtil.writePassword(pwd);
+                        mSPUtil.writePassword(pwdMD5);
                         // 注册成功，跳回登录界面
                         Intent intent = getIntent();
                         intent.putExtra("isRegister", true);
