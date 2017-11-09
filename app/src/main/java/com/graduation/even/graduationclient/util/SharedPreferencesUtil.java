@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 
 /**
  * Created by Even on 2017/11/9.
+ * 本地保存用户账号和密码
  */
 
 public class SharedPreferencesUtil {

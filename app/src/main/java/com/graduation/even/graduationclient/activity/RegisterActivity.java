@@ -1,12 +1,17 @@
 package com.graduation.even.graduationclient.activity;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 
 import com.graduation.even.graduationclient.R;
+import com.graduation.even.graduationclient.net.callback.NetCallBack;
+import com.graduation.even.graduationclient.net.connector.NetworkConnector;
+import com.graduation.even.graduationclient.util.SharedPreferencesUtil;
 import com.graduation.even.graduationclient.util.ToastUtil;
 import com.graduation.even.graduationclient.util.ToolbarUtil;
 
@@ -23,7 +28,13 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     private EditText confirmPwdEt;
     private EditText phoneEt;
     private EditText setPwdEt;
+    private ProgressBar progressBar;
+
     private String mCode;
+    private NetworkConnector mNetworkConnector;
+    private SharedPreferencesUtil mSPUtil;
+
+    private boolean isRegistering = false;
 
     @Override
     protected boolean forceScreenOrientationPortrait() {
@@ -40,27 +51,29 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         getCodeBtn = findViewById(R.id.btn_get_code);
         registerBtn = findViewById(R.id.btn_register);
-        checkCodeEt =  findViewById(R.id.et_check_code);
-        confirmPwdEt =  findViewById(R.id.et_confirm_pwd);
-        phoneEt =  findViewById(R.id.et_phone);
-        setPwdEt =  findViewById(R.id.et_set_pwd);
+        checkCodeEt = findViewById(R.id.et_check_code);
+        confirmPwdEt = findViewById(R.id.et_confirm_pwd);
+        phoneEt = findViewById(R.id.et_phone);
+        setPwdEt = findViewById(R.id.et_set_pwd);
+        progressBar = findViewById(R.id.progress_bar);
     }
 
     @Override
     protected void initData() {
-
+        mNetworkConnector = NetworkConnector.getInstance();
+        mSPUtil = SharedPreferencesUtil.getInstance(this);
     }
 
     @Override
     protected void initEvent() {
         getCodeBtn.setOnClickListener(this);
         registerBtn.setOnClickListener(this);
-        new ToolbarUtil().initToolbar(this,mToolbar);
+        new ToolbarUtil().initToolbar(this, mToolbar);
     }
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.btn_get_code:
                 int code = getRandom4Num();
                 mCode = String.valueOf(code);
@@ -69,24 +82,24 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
             case R.id.btn_register:
                 String phone = phoneEt.getText().toString();
                 String pwd = setPwdEt.getText().toString();
-                if(!isPhoneLegal(phone)){
+                if (!isPhoneLegal(phone)) {
                     phoneEt.setError("输入手机号不合法！");
                     return;
                 }
-                if(checkCodeEt.getText().toString() != mCode){
+                if (checkCodeEt.getText().toString() != mCode) {
                     checkCodeEt.setError("验证码不正确！");
                     return;
                 }
-                if(confirmPwdEt.getText().toString() != pwd){
+                if (confirmPwdEt.getText().toString() != pwd) {
                     confirmPwdEt.setError("两次输入密码不一致！");
                     return;
                 }
-                registerAccount(phone,pwd);
+                registerAccount(phone, pwd);
                 break;
         }
     }
 
-    private void showCodeDialog(String code){
+    private void showCodeDialog(String code) {
         /*
          * @setTitle 设置对话框标题
          * @setMessage 设置对话框消息提示
@@ -100,9 +113,66 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         dialog.show();
     }
 
-    // todo
     /* 账号注册 */
-    private void registerAccount(String phone,String pwd){
+    private void registerAccount(final String phone, final String pwd) {
 
+        if (isRegistering)
+            return;
+        else
+            isRegistering = true;
+
+        showProgress(true);
+
+        mNetworkConnector.register(phone, pwd, new NetCallBack() {
+            @Override
+            public void onNetworkError() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        showProgress(false);
+                        isRegistering = false;
+                        ToastUtil.showToast(RegisterActivity.this, "网络错误");
+                    }
+                });
+            }
+
+            @Override
+            public void onFailed(final String error) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        showProgress(false);
+                        isRegistering = false;
+                        ToastUtil.showToast(RegisterActivity.this, error);
+                    }
+                });
+            }
+
+            @Override
+            public void onSuccess(Object object) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        showProgress(false);
+                        isRegistering = false;
+                        //向本地文件中写入数据
+                        mSPUtil.writePhone(phone);
+                        mSPUtil.writePassword(pwd);
+                        // 注册成功，跳回登录界面
+                        Intent intent = getIntent();
+                        intent.putExtra("isRegister", true);
+                        setResult(RESULT_OK, intent);
+                        finish();
+                    }
+                });
+            }
+        });
+    }
+
+    private void showProgress(boolean show) {
+        if (show)
+            progressBar.setVisibility(View.VISIBLE);
+        else
+            progressBar.setVisibility(View.GONE);
     }
 }

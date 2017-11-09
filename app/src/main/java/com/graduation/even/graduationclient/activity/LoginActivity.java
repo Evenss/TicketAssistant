@@ -30,6 +30,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     private NetworkConnector mNetworkConnector;
     private SharedPreferencesUtil mSPUtil;
     private boolean isLoggingIn = false;
+
+    private final static int REGISTER_REQUEST_CODE = 2;
     @Override
     protected boolean forceScreenOrientationPortrait() {
         return false;
@@ -68,7 +70,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         switch (view.getId()) {
             case R.id.btn_register:
                 Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent,REGISTER_REQUEST_CODE);
                 break;
             case R.id.btn_login:
                 String phone = phoneEt.getText().toString();
@@ -149,6 +151,21 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             progressBar.setVisibility(View.VISIBLE);
         else
             progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode == RESULT_OK){
+            PLog.i("onActivityResult RESULT_OK");
+            switch (requestCode){
+                case REGISTER_REQUEST_CODE:
+                    PLog.i("REGISTER_REQUEST_CODE");
+                    if(data != null && data.getBooleanExtra("isRegister",false)){
+                        finish();//用户已经注册，跳过登录
+                    }
+                    break;
+            }
+        }
     }
 
 }

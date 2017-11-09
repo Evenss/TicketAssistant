@@ -83,9 +83,8 @@ public class MyInfoFragment extends BaseFragment implements View.OnClickListener
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        PLog.i("onActivityResult");
         if(resultCode == RESULT_OK){
-            PLog.i("RESULT_OK");
+            PLog.i("onActivityResult RESULT_OK");
             switch (requestCode){
                 case LOGIN_REQUEST_CODE:
                     PLog.i("LOGIN_REQUEST_CODE");

@@ -3,7 +3,9 @@ package com.graduation.even.graduationclient.net.connector;
 import com.google.gson.Gson;
 import com.graduation.even.graduationclient.constant.API;
 import com.graduation.even.graduationclient.net.bean.request.LoginRequest;
+import com.graduation.even.graduationclient.net.bean.request.RegisterRequest;
 import com.graduation.even.graduationclient.net.bean.response.LoginResponse;
+import com.graduation.even.graduationclient.net.bean.response.RegisterResponse;
 import com.graduation.even.graduationclient.net.callback.NetCallBack;
 import com.graduation.even.graduationclient.user.UserInfo;
 import com.graduation.even.graduationclient.util.MD5Util;
@@ -86,4 +88,43 @@ public class NetworkConnector {
             }
         });
     }
+
+    // 注册
+    public void register(String phone, String pwd, final NetCallBack callBack) {
+        PLog.i("register, url is " + API.URL_REGISTER);
+        pwd = MD5Util.encoderByMd5(pwd);
+        PLog.i("encoded password " + pwd);
+        RegisterRequest registerRequest = new RegisterRequest(phone, pwd);
+        RequestBody body = RequestBody.create(JSON, mGson.toJson(registerRequest));
+        Request request = new Request.Builder()
+                .url(API.URL_REGISTER)
+                .post(body)
+                .build();
+        Call call = mClient.newCall(request);
+        PLog.i("do enqueue");
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                PLog.i("failed to register:" + e);
+                callBack.onNetworkError();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String string = response.body().string();
+                PLog.i("register, response is " + string);
+                RegisterResponse registerResponse = mGson.fromJson(string, RegisterResponse.class);
+                if (registerResponse.isSuccess()) {
+                    PLog.i("success to register");
+                    mUserInfo.setInfo(registerResponse.data.userId, registerResponse.data.token,
+                            registerResponse.data.phone, registerResponse.data.invalidTime);
+                    callBack.onSuccess(null);
+                } else {
+                    PLog.i("failed to register:" + registerResponse.error);
+                    callBack.onFailed(registerResponse.error);
+                }
+            }
+        });
+    }
+
 }
