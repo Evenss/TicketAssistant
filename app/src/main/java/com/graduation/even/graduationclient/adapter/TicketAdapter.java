@@ -10,6 +10,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.graduation.even.graduationclient.R;
+import com.graduation.even.graduationclient.net.bean.response.TicketShowResponse;
 
 import java.util.List;
 
@@ -19,11 +20,11 @@ import java.util.List;
 
 public class TicketAdapter extends RecyclerView.Adapter<TicketAdapter.MyViewHolder> {
     private Context context;
-    private List<String> mDatas;//todo 票要展示的数据
+    private List<TicketShowResponse.Ticket> mData;//todo 票要展示的数据
 
-    public TicketAdapter(Context context, List<String> mDatas) {
+    public TicketAdapter(Context context, List<TicketShowResponse.Ticket> mData) {
         this.context = context;
-        this.mDatas = mDatas;
+        this.mData = mData;
     }
 
     @Override

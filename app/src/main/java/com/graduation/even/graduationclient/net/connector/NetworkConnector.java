@@ -7,11 +7,13 @@ import com.graduation.even.graduationclient.net.bean.request.LoginRequest;
 import com.graduation.even.graduationclient.net.bean.request.LogoutRequest;
 import com.graduation.even.graduationclient.net.bean.request.RegisterRequest;
 import com.graduation.even.graduationclient.net.bean.request.SetEmailRequest;
+import com.graduation.even.graduationclient.net.bean.request.TicketShowRequest;
 import com.graduation.even.graduationclient.net.bean.response.ChangePwdResponse;
 import com.graduation.even.graduationclient.net.bean.response.LoginResponse;
 import com.graduation.even.graduationclient.net.bean.response.LogoutResponse;
 import com.graduation.even.graduationclient.net.bean.response.RegisterResponse;
 import com.graduation.even.graduationclient.net.bean.response.SetEmailResponse;
+import com.graduation.even.graduationclient.net.bean.response.TicketShowResponse;
 import com.graduation.even.graduationclient.net.callback.NetCallBack;
 import com.graduation.even.graduationclient.user.UserInfo;
 import com.graduation.even.graduationclient.util.MD5Util;
@@ -245,6 +247,44 @@ public class NetworkConnector {
                 }
             }
         });
+    }
 
+    // 获取票列表
+    public void getTicketList(String departure, String destination, long date, boolean isGD,
+                              int pageSize, int pageNumber, final NetCallBack callBack) {
+        PLog.i("get ticket list, url is " + API.URL_TICKET_QUERY);
+
+        TicketShowRequest ticketRequest =
+                new TicketShowRequest(departure, destination, date, isGD, pageSize, pageNumber);
+
+        RequestBody body = RequestBody.create(JSON, mGson.toJson(ticketRequest));
+        Request request = new Request.Builder()
+                .url(API.URL_TICKET_QUERY)
+                .post(body)
+                .build();
+
+        Call call = mClient.newCall(request);
+        PLog.i("do enqueue");
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                PLog.i("failed to get ticket list:" + e);
+                callBack.onNetworkError();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String string = response.body().string();
+                PLog.i("get ticket list, response is " + string);
+                TicketShowResponse ticketResponse = mGson.fromJson(string, TicketShowResponse.class);
+                if (ticketResponse.isSuccess()) {
+                    PLog.i("success to get ticket list");
+                    callBack.onSuccess(ticketResponse.data);
+                } else {
+                    PLog.i("failed to get ticket list:" + ticketResponse.error);
+                    callBack.onFailed(ticketResponse.error);
+                }
+            }
+        });
     }
 }
