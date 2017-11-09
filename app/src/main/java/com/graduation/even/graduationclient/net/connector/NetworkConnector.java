@@ -5,9 +5,11 @@ import com.graduation.even.graduationclient.constant.API;
 import com.graduation.even.graduationclient.net.bean.request.LoginRequest;
 import com.graduation.even.graduationclient.net.bean.request.LogoutRequest;
 import com.graduation.even.graduationclient.net.bean.request.RegisterRequest;
+import com.graduation.even.graduationclient.net.bean.request.SetEmailRequest;
 import com.graduation.even.graduationclient.net.bean.response.LoginResponse;
 import com.graduation.even.graduationclient.net.bean.response.LogoutResponse;
 import com.graduation.even.graduationclient.net.bean.response.RegisterResponse;
+import com.graduation.even.graduationclient.net.bean.response.SetEmailResponse;
 import com.graduation.even.graduationclient.net.callback.NetCallBack;
 import com.graduation.even.graduationclient.user.UserInfo;
 import com.graduation.even.graduationclient.util.MD5Util;
@@ -130,7 +132,7 @@ public class NetworkConnector {
     }
 
     //登出
-    public void logout(final NetCallBack callBack){
+    public void logout(final NetCallBack callBack) {
         PLog.i("logout, url is " + API.URL_LOGOUT);
         String token = UserInfo.getInstance().getToken();
         LogoutRequest logoutRequest = new LogoutRequest(token);
@@ -162,5 +164,42 @@ public class NetworkConnector {
                 }
             }
         });
+    }
+
+    //设置邮箱
+    public void setEmail(String email, final NetCallBack callBack) {
+        PLog.i("set email, url is " + API.URL_SET_EMAIL);
+        String token = UserInfo.getInstance().getToken();
+        int userId = UserInfo.getInstance().getUserId();
+        SetEmailRequest setEmailRequest = new SetEmailRequest(token, userId, email);
+        RequestBody body = RequestBody.create(JSON, mGson.toJson(setEmailRequest));
+        Request request = new Request.Builder()
+                .url(API.URL_SET_EMAIL)
+                .post(body)
+                .build();
+        Call call = mClient.newCall(request);
+        PLog.i("do enqueue");
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                PLog.i("failed to set email:" + e);
+                callBack.onNetworkError();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String string = response.body().string();
+                PLog.i("set email, response is " + string);
+                SetEmailResponse setEmailResponse = mGson.fromJson(string, SetEmailResponse.class);
+                if (setEmailResponse.isSuccess()) {
+                    PLog.i("success to set email");
+                    callBack.onSuccess(null);
+                } else {
+                    PLog.i("failed to set email:" + setEmailResponse.error);
+                    callBack.onFailed(setEmailResponse.error);
+                }
+            }
+        });
+
     }
 }
