@@ -8,6 +8,7 @@
     android:orientation="vertical">
 
     <RelativeLayout
+        android:visibility="gone"
         android:id="@+id/rl_login_prompt"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -51,23 +52,40 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
-                android:orientation="vertical"
+                android:paddingLeft="20dp"
                 android:background="@mipmap/bg_login"
-                android:gravity="center">
+                android:gravity="center_vertical">
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:src="@mipmap/icon_account_pic"
                     app:civ_border_width="2dp"
                     app:civ_border_color="@color/transparent" />
-                <TextView
-                    android:id="@+id/tv_phone"
-                    android:text="15957159506"
-                    android:textColor="@color/black"
-                    android:textSize="18dp"
+                <RelativeLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"/>
+                    android:layout_height="100dp">
+                    <TextView
+                        android:id="@+id/tv_phone"
+                        android:text="15957159506"
+                        android:textColor="@color/white"
+                        android:textSize="20sp"
+                        android:paddingLeft="20dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"/>
+                    <TextView
+                        android:id="@+id/tv_email"
+                        android:text="786007448@qq.com"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"
+                        android:paddingLeft="20dp"
+                        android:layout_below="@+id/tv_phone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"/>
+                </RelativeLayout>
+
             </LinearLayout>
         </android.support.v7.widget.CardView>
 
@@ -127,6 +145,39 @@
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="20dp"
                     android:layout_toRightOf="@+id/img_order" />
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:src="@mipmap/icon_arrow"
+                    android:layout_marginRight="20dp"/>
+            </RelativeLayout>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:layout_marginTop="0.1dp"
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+            <RelativeLayout
+                android:id="@+id/rl_set_email"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <ImageView
+                    android:id="@+id/img_set_email"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@mipmap/icon_email"
+                    android:layout_marginLeft="20dp"
+                    android:layout_centerVertical="true"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="设置邮箱"
+                    android:textColor="@color/black"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="20dp"
+                    android:layout_toRightOf="@+id/img_set_email" />
                 <ImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"

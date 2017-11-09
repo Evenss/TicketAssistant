@@ -1,6 +1,8 @@
 package com.graduation.even.graduationclient.fragment;
 
 import android.content.Intent;
+import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
@@ -10,7 +12,12 @@ import com.graduation.even.graduationclient.R;
 import com.graduation.even.graduationclient.activity.ChangePwdActivity;
 import com.graduation.even.graduationclient.activity.LoginActivity;
 import com.graduation.even.graduationclient.activity.MainActivity;
+import com.graduation.even.graduationclient.net.callback.NetCallBack;
+import com.graduation.even.graduationclient.net.connector.NetworkConnector;
+import com.graduation.even.graduationclient.user.UserInfo;
 import com.graduation.even.graduationclient.util.PLog;
+import com.graduation.even.graduationclient.util.SharedPreferencesUtil;
+import com.graduation.even.graduationclient.util.ToastUtil;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -20,10 +27,13 @@ import static android.app.Activity.RESULT_OK;
 
 public class MyInfoFragment extends BaseFragment implements View.OnClickListener{
 
-    private RelativeLayout loginPromptRl,changePwdRl,orderInfoRl,moreRl;
+    private RelativeLayout loginPromptRl,changePwdRl,orderInfoRl,moreRl,setEmailRl;
     private Button loginBtn,logoutBtn;
-    private TextView phoneTv;
+    private TextView phoneTv,emailTv;
+    private UserInfo userInfo;
 
+    private NetworkConnector mNetworkConnector;
+    private SharedPreferencesUtil mSPUtil;
     private final static int LOGIN_REQUEST_CODE = 1;
     @Override
     int getResourceId() {
@@ -38,22 +48,26 @@ public class MyInfoFragment extends BaseFragment implements View.OnClickListener
     @Override
     void initView(View view) {
         loginPromptRl = view.findViewById(R.id.rl_login_prompt);
+        setEmailRl = view.findViewById(R.id.rl_set_email);
         loginBtn = view.findViewById(R.id.btn_login);
         logoutBtn = view.findViewById(R.id.btn_logout);
         phoneTv = view.findViewById(R.id.tv_phone);
         changePwdRl = view.findViewById(R.id.rl_change_pwd);
         orderInfoRl = view.findViewById(R.id.rl_order_info);
         moreRl = view.findViewById(R.id.rl_more);
+        emailTv = view.findViewById(R.id.tv_email);
     }
 
     @Override
     void initData() {
-
+        mNetworkConnector = NetworkConnector.getInstance();
+        mSPUtil = SharedPreferencesUtil.getInstance(getActivity());
     }
 
     @Override
     void initEvent() {
         loginBtn.setOnClickListener(this);
+        setEmailRl.setOnClickListener(this);
         logoutBtn.setOnClickListener(this);
         changePwdRl.setOnClickListener(this);
         orderInfoRl.setOnClickListener(this);
@@ -76,6 +90,9 @@ public class MyInfoFragment extends BaseFragment implements View.OnClickListener
                 break;
             case R.id.rl_order_info:
                 break;
+            case R.id.rl_set_email:
+
+                break;
             case R.id.rl_more:
                 break;
         }
@@ -90,7 +107,15 @@ public class MyInfoFragment extends BaseFragment implements View.OnClickListener
                     PLog.i("LOGIN_REQUEST_CODE");
                     if(data != null && data.getBooleanExtra("isLogin",false)){
                         loginPromptRl.setVisibility(View.GONE);
-                        // todo 从返回的活动中取出用户数据
+                        // 返回的活动后取出用户数据
+                        userInfo = UserInfo.getInstance();
+                        phoneTv.setText(userInfo.getPhone());
+                        if(TextUtils.isEmpty(userInfo.getEmail())){
+                            emailTv.setText("暂未设置邮箱");
+                            emailTv.setTextColor(ContextCompat.getColor(getActivity(),R.color.grayDark));
+                        }else{
+                            emailTv.setText(userInfo.getEmail());
+                        }
                     }
                     break;
             }
@@ -99,10 +124,27 @@ public class MyInfoFragment extends BaseFragment implements View.OnClickListener
 
     // todo 网络请求
     private void logout(){
-        getActivity().runOnUiThread(new Runnable() {
+
+        mNetworkConnector.logout(new NetCallBack() {
             @Override
-            public void run() {
-                ((MainActivity) getActivity()).backToLogin();
+            public void onNetworkError() {
+                ToastUtil.showToastOnUIThread(getActivity(),"网络错误");
+            }
+
+            @Override
+            public void onFailed(String error) {
+                ToastUtil.showToastOnUIThread(getActivity(),error);
+            }
+
+            @Override
+            public void onSuccess(Object object) {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ((MainActivity) getActivity()).bakcToMain();
+                        ToastUtil.showToast(getActivity(),"退出登录成功");
+                    }
+                });
             }
         });
     }

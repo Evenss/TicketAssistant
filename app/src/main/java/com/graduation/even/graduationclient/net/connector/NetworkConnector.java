@@ -3,8 +3,10 @@ package com.graduation.even.graduationclient.net.connector;
 import com.google.gson.Gson;
 import com.graduation.even.graduationclient.constant.API;
 import com.graduation.even.graduationclient.net.bean.request.LoginRequest;
+import com.graduation.even.graduationclient.net.bean.request.LogoutRequest;
 import com.graduation.even.graduationclient.net.bean.request.RegisterRequest;
 import com.graduation.even.graduationclient.net.bean.response.LoginResponse;
+import com.graduation.even.graduationclient.net.bean.response.LogoutResponse;
 import com.graduation.even.graduationclient.net.bean.response.RegisterResponse;
 import com.graduation.even.graduationclient.net.callback.NetCallBack;
 import com.graduation.even.graduationclient.user.UserInfo;
@@ -127,4 +129,38 @@ public class NetworkConnector {
         });
     }
 
+    //登出
+    public void logout(final NetCallBack callBack){
+        PLog.i("logout, url is " + API.URL_LOGOUT);
+        String token = UserInfo.getInstance().getToken();
+        LogoutRequest logoutRequest = new LogoutRequest(token);
+        RequestBody body = RequestBody.create(JSON, mGson.toJson(logoutRequest));
+        Request request = new Request.Builder()
+                .url(API.URL_LOGOUT)
+                .post(body)
+                .build();
+        Call call = mClient.newCall(request);
+        PLog.i("do enqueue");
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                PLog.i("failed to logout:" + e);
+                callBack.onNetworkError();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String string = response.body().string();
+                PLog.i("logout, response is " + string);
+                LogoutResponse logoutResponse = mGson.fromJson(string, LogoutResponse.class);
+                if (logoutResponse.isSuccess()) {
+                    PLog.i("success to logout");
+                    callBack.onSuccess(null);
+                } else {
+                    PLog.i("failed to logout:" + logoutResponse.error);
+                    callBack.onFailed(logoutResponse.error);
+                }
+            }
+        });
+    }
 }

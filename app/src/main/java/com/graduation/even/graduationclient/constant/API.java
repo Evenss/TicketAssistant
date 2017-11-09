@@ -14,6 +14,7 @@ public class API {
 
     private static String HOST = "http://";
     public static String URL_LOGIN = HOST + "/user/login";
+    public static String URL_LOGOUT = HOST + "/user/logout";
     public static String URL_REGISTER = HOST + "/user/register";
     public static String URL_TICKET_QUERY = HOST + "/ticket/query";
 }

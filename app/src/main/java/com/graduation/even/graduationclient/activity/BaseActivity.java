@@ -65,4 +65,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     public void backToLogin(){
         myApplication.backToLoginActivity();
     }
+    //退回到主界面
+    public void bakcToMain(){
+        myApplication.backToMainActivity();
+    }
 }

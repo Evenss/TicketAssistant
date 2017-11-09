@@ -5,6 +5,7 @@ import android.app.Application;
 import android.content.Intent;
 
 import com.graduation.even.graduationclient.activity.LoginActivity;
+import com.graduation.even.graduationclient.activity.MainActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +33,13 @@ public class MyApplication extends Application{
         removeAll();
 
         Intent intent = new Intent(this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
+    public void backToMainActivity(){
+        removeAll();
+
+        Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
