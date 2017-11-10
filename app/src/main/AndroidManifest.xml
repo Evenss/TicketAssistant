@@ -6,6 +6,7 @@
         android:name="com.amap.api.v2.apikey"
         android:value="7f2e6895baceee9d6472c45c43ca3789" />
 
+
     <application
         android:name=".application.MyApplication"
         android:allowBackup="true"
