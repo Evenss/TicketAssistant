@@ -5,8 +5,8 @@
     android:useLevel="false" >
 
     <corners android:radius="5dp"/>
-    <solid android:color="@color/gray" />
+    <solid android:color="@color/grayWhite" />
     <!-- 设置一个边框 -->
-    <stroke android:width="3px" android:color="@color/grayDark"/>
+    <stroke android:width="3px" android:color="@color/gray"/>
 
 </shape>

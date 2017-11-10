@@ -9,9 +9,11 @@
     <color name="white">#ffffff</color>
     <color name="black">#000000</color>
     <color name="transparent">#00FFFFFF</color>
-    <color name="gray">#F6F6F6</color>
-    <color name="grayDark">#B4B4B4</color>
-    <color name="grayDarkDark">#A9A9A9</color>
+    <color name="grayWhite">#F6F6F6</color>
+    <color name="gray">#B4B4B4</color>
+    <color name="grayDark">#A9A9A9</color>
+    <color name="orangeRed">#FF4500</color>
+    <color name="grayDarkDark">#808080</color>
 
 
     <!-- 登录 -->

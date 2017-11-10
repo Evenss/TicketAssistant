@@ -1,7 +1,6 @@
 package com.graduation.even.graduationclient.fragment;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
@@ -20,7 +19,6 @@ import com.graduation.even.graduationclient.net.callback.NetCallBack;
 import com.graduation.even.graduationclient.net.connector.NetworkConnector;
 import com.graduation.even.graduationclient.user.UserInfo;
 import com.graduation.even.graduationclient.util.PLog;
-import com.graduation.even.graduationclient.util.SharedPreferencesUtil;
 import com.graduation.even.graduationclient.util.ToastUtil;
 
 import static android.app.Activity.RESULT_OK;
@@ -116,7 +114,7 @@ public class MyInfoFragment extends BaseFragment implements View.OnClickListener
                         phoneTv.setText(mUserInfo.getPhone());
                         if (TextUtils.isEmpty(mUserInfo.getEmail())) {
                             emailTv.setText("暂未设置邮箱");
-                            emailTv.setTextColor(ContextCompat.getColor(getActivity(), R.color.grayDark));
+                            emailTv.setTextColor(ContextCompat.getColor(getActivity(), R.color.gray));
                         } else {
                             emailTv.setText(mUserInfo.getEmail());
                         }

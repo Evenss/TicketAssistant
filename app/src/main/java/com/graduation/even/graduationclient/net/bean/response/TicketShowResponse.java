@@ -29,6 +29,10 @@ public class TicketShowResponse extends BaseResponse {
 
     // 票信息
     public class Ticket{
+        @SerializedName("dptStationName")
+        public String dptStationName;
+        @SerializedName("arrStationName")
+        public String arrStationName;
         @SerializedName("trainNo")
         public String trainNo;
         @SerializedName("startDate")

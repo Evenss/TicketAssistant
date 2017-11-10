@@ -2,6 +2,7 @@ package com.graduation.even.graduationclient.activity;
 
 import android.content.Intent;
 
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -14,27 +15,30 @@ import com.graduation.even.graduationclient.adapter.TicketAdapter;
 import com.graduation.even.graduationclient.net.bean.response.TicketShowResponse;
 import com.graduation.even.graduationclient.net.callback.NetCallBack;
 import com.graduation.even.graduationclient.net.connector.NetworkConnector;
+import com.graduation.even.graduationclient.util.PLog;
 import com.graduation.even.graduationclient.util.ToastUtil;
 import com.graduation.even.graduationclient.util.ToolbarUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.graduation.even.graduationclient.util.TimeUtil.getDayOfWeekInChinese;
 import static com.graduation.even.graduationclient.util.TimeUtil.getTimeCustomFormatted;
 import static com.graduation.even.graduationclient.util.TimeUtil.getTimeFormatted;
 
-public class TicketShowActivity extends BaseActivity implements View.OnClickListener {
+public class TicketShowActivity extends BaseActivity implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
 
     // UI
     private TextView titleTv, datePromptTv;
     private Button setMonitorBtn;
     private RecyclerView ticketShowRv;
+    private SwipeRefreshLayout swipeRefreshLayout;
     private Toolbar mToolbar;
 
     private LinearLayoutManager mManager;
     private TicketAdapter mTicketAdapter;
     private NetworkConnector mNetworkConnector;
-    private List<TicketShowResponse.Ticket> mTicketList;//todo 票要展示的数据
+    private List<TicketShowResponse.Ticket> mTicketList;
 
     private int mCurrentPage = 1;
     private boolean mIsLastPage = false;
@@ -56,11 +60,12 @@ public class TicketShowActivity extends BaseActivity implements View.OnClickList
 
     @Override
     protected void initView() {
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mToolbar = findViewById(R.id.toolbar);
         titleTv = findViewById(R.id.tv_title);
         setMonitorBtn = findViewById(R.id.btn_set_monitor);
         datePromptTv = findViewById(R.id.tv_date_prompt);
         ticketShowRv = findViewById(R.id.rv_ticket_show);
+        swipeRefreshLayout = findViewById(R.id.swipe_layout);
     }
 
     @Override
@@ -81,12 +86,13 @@ public class TicketShowActivity extends BaseActivity implements View.OnClickList
         mNetworkConnector = NetworkConnector.getInstance();
 
         // 获取list内容
+        mTicketList = new ArrayList<>();
         getTicketList();
 
         // 设置list
         mManager = new LinearLayoutManager(this);
         ticketShowRv.setLayoutManager(mManager);
-        mTicketAdapter = new TicketAdapter(this, mTicketList);
+        mTicketAdapter = new TicketAdapter(this, mTicketList,false);
 
 
     }
@@ -94,7 +100,22 @@ public class TicketShowActivity extends BaseActivity implements View.OnClickList
     @Override
     protected void initEvent() {
         setMonitorBtn.setOnClickListener(this);
+        swipeRefreshLayout.setOnRefreshListener(this);
         new ToolbarUtil().initToolbar(this, mToolbar);
+
+        // 上拉加载
+        ticketShowRv.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    int lastVisiblePosition = mManager.findLastVisibleItemPosition();
+                    if (lastVisiblePosition >= mManager.getItemCount() - 1) {
+                        getMoreTicket();
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -104,6 +125,14 @@ public class TicketShowActivity extends BaseActivity implements View.OnClickList
                 //todo
                 break;
         }
+    }
+
+    // 下拉刷新
+    @Override
+    public void onRefresh() {
+        PLog.i("onRefresh");
+        mCurrentPage = 1;
+        getTicketList();
     }
 
     /* 联网获取票的信息 */
@@ -122,20 +151,30 @@ public class TicketShowActivity extends BaseActivity implements View.OnClickList
 
                     @Override
                     public void onSuccess(Object object) {
-                        TicketShowResponse.Data data = (TicketShowResponse.Data) object;
-                        mTicketList.addAll(data.list);
-                        mIsLastPage = data.lastPage;
+                        TicketShowResponse.Data ticketData = (TicketShowResponse.Data) object;
+                        mTicketList.addAll(ticketData.list);
+                        mIsLastPage = ticketData.lastPage;
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mTicketAdapter.notifyDataSetChanged();
+                                swipeRefreshLayout.setRefreshing(false);
+                            }
+                        });
                     }
                 });
     }
 
     // 上拉加载
     private void getMoreTicket() {
+        PLog.i("load more ticket");
         if (mIsLastPage) {
             ToastUtil.showToast(this, "没有更多的数据了");
         } else {
             mCurrentPage++;
+            PLog.i("current page = " + mCurrentPage);
             getTicketList();
         }
     }
+
 }

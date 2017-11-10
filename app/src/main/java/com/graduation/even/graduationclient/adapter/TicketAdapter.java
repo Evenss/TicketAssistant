@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.graduation.even.graduationclient.R;
@@ -14,35 +13,113 @@ import com.graduation.even.graduationclient.net.bean.response.TicketShowResponse
 
 import java.util.List;
 
+import static android.support.v4.content.ContextCompat.getColor;
+
 /**
  * Created by Even on 2017/11/8.
  */
 
 public class TicketAdapter extends RecyclerView.Adapter<TicketAdapter.MyViewHolder> {
-    private Context context;
-    private List<TicketShowResponse.Ticket> mData;//todo 票要展示的数据
+    private Context mContext;
+    private OnItemClickListener mOnItemClickListener;
+    private List<TicketShowResponse.Ticket> ticketList;
+    private boolean isShowCheckBox;
 
-    public TicketAdapter(Context context, List<TicketShowResponse.Ticket> mData) {
-        this.context = context;
-        this.mData = mData;
+    // 点击接口
+    public interface OnItemClickListener {
+        void onItemClick(View view, int position);
+    }
+
+    // 设置点击接口
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        this.mOnItemClickListener = onItemClickListener;
+    }
+
+    public TicketAdapter(Context mContext, List<TicketShowResponse.Ticket> ticketList, boolean isShowCheckBox) {
+        this.mContext = mContext;
+        this.ticketList = ticketList;
+        this.isShowCheckBox = isShowCheckBox;
     }
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         MyViewHolder holder = new MyViewHolder(LayoutInflater.from(
-                context).inflate(R.layout.adapter_ticket, parent,
+                mContext).inflate(R.layout.adapter_ticket, parent,
                 false));
         return holder;
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
-
+    public void onBindViewHolder(final MyViewHolder holder, int position) {
+        // 如果设置了回调，则设置点击事件
+        if (mOnItemClickListener != null) {
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int pos = holder.getLayoutPosition();
+                    mOnItemClickListener.onItemClick(holder.itemView, pos);
+                }
+            });
+        }
+        TicketShowResponse.Ticket ticket = ticketList.get(position);
+        holder.start.setText(ticket.dptStationName);
+        holder.startDate.setText(ticket.dptTime);
+        holder.end.setText(ticket.arrStationName);
+        holder.endDate.setText(ticket.arrTime);
+        holder.trainNum.setText(ticket.trainNo);
+        holder.interval.setText(ticket.interval);
+        holder.price.setText(ticket.cheapestPrice);
+        if (isShowCheckBox) {
+            holder.selected.setVisibility(View.VISIBLE);
+        }
+        setSeats(holder, ticket);
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return ticketList.size();
+    }
+
+    // 设置座位信息
+    private void setSeats(final MyViewHolder holder, TicketShowResponse.Ticket ticket) {
+        if (ticket.seats.business != null) {
+            setSeatInfo(ticket.seats.business, holder.seatType1, "商务座");
+        }
+        if (ticket.seats.one != null) {
+            setSeatInfo(ticket.seats.one, holder.seatType2, "一等座");
+        }
+        if (ticket.seats.two != null) {
+            setSeatInfo(ticket.seats.two, holder.seatType3, "二等座");
+        }
+        if (ticket.seats.zero != null) {
+            setSeatInfo(ticket.seats.zero, holder.seatType4, "无座");
+        }
+
+        if (ticket.seats.soft != null) {
+            setSeatInfo(ticket.seats.soft, holder.seatType1, "软卧");
+        }
+        if (ticket.seats.hardSleep != null) {
+            setSeatInfo(ticket.seats.hardSleep, holder.seatType2, "硬卧");
+        }
+        if (ticket.seats.hardSeat != null) {
+            setSeatInfo(ticket.seats.hardSeat, holder.seatType3, "硬座");
+        }
+
+    }
+
+    // 座位信息的UI设置
+    private void setSeatInfo(TicketShowResponse.SeatInfo seatInfo, TextView seatType, String description) {
+        int count = seatInfo.count;
+        if (count < 10) {
+            seatType.setText(description + count + "(抢)");
+            seatType.setTextColor(getColor(mContext,R.color.orangeRed));
+        } else if (count > 0) {
+            seatType.setText(description + count);
+            seatType.setTextColor(getColor(mContext,R.color.grayDarkDark));
+        } else if (count >= 100) {
+            seatType.setText(description + count + "+");
+            seatType.setTextColor(getColor(mContext,R.color.grayDarkDark));
+        }
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder {
@@ -59,9 +136,6 @@ public class TicketAdapter extends RecyclerView.Adapter<TicketAdapter.MyViewHold
         private TextView seatType2;
         private TextView seatType3;
         private TextView seatType4;
-
-        TextView mTvName, mTvTel, mTvTime, mTvDesc;
-        RelativeLayout mRelativeLayout;
 
         public MyViewHolder(View view) {
             super(view);
