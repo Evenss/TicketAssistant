@@ -6,6 +6,8 @@ package com.graduation.even.graduationclient.net.callback;
  */
 
 public interface NetCallBack {
+    void onTokenInvalid();
+
     void onNetworkError();
 
     void onFailed(String error);

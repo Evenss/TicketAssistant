@@ -165,6 +165,10 @@ public class MyInfoFragment extends BaseFragment implements View.OnClickListener
     private void logout() {
         mNetworkConnector.logout(new NetCallBack() {
             @Override
+            public void onTokenInvalid() {
+                ToastUtil.showToastOnUIThread(getActivity(), "登录信息已过期，请重新登录");
+            }
+            @Override
             public void onNetworkError() {
                 ToastUtil.showToastOnUIThread(getActivity(), "网络错误");
             }
@@ -190,6 +194,10 @@ public class MyInfoFragment extends BaseFragment implements View.OnClickListener
     //设置邮箱
     private void setEmail(final String email) {
         mNetworkConnector.setEmail(email, new NetCallBack() {
+            @Override
+            public void onTokenInvalid() {
+                ToastUtil.showToastOnUIThread(getActivity(), "登录信息已过期，请重新登录");
+            }
             @Override
             public void onNetworkError() {
                 ToastUtil.showToastOnUIThread(getActivity(), "网络错误");

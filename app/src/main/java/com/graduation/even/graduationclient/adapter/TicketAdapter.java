@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.graduation.even.graduationclient.R;
 import com.graduation.even.graduationclient.net.bean.response.TicketShowResponse;
+import com.graduation.even.graduationclient.util.PLog;
 
 import java.util.List;
 
@@ -50,12 +51,13 @@ public class TicketAdapter extends RecyclerView.Adapter<TicketAdapter.MyViewHold
     }
 
     @Override
-    public void onBindViewHolder(final MyViewHolder holder, int position) {
+    public void onBindViewHolder(final MyViewHolder holder, final int position) {
         // 如果设置了回调，则设置点击事件
         if (mOnItemClickListener != null) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    PLog.i("holder item click position = " + position);
                     int pos = holder.getLayoutPosition();
                     mOnItemClickListener.onItemClick(holder.itemView, pos);
                 }
@@ -112,13 +114,13 @@ public class TicketAdapter extends RecyclerView.Adapter<TicketAdapter.MyViewHold
         int count = seatInfo.count;
         if (count < 10) {
             seatType.setText(description + count + "(抢)");
-            seatType.setTextColor(getColor(mContext,R.color.orangeRed));
+            seatType.setTextColor(getColor(mContext, R.color.orangeRed));
         } else if (count > 0) {
             seatType.setText(description + count);
-            seatType.setTextColor(getColor(mContext,R.color.grayDarkDark));
+            seatType.setTextColor(getColor(mContext, R.color.grayDarkDark));
         } else if (count >= 100) {
             seatType.setText(description + count + "+");
-            seatType.setTextColor(getColor(mContext,R.color.grayDarkDark));
+            seatType.setTextColor(getColor(mContext, R.color.grayDarkDark));
         }
     }
 

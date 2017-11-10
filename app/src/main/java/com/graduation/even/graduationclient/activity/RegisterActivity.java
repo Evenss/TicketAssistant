@@ -126,6 +126,18 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         final String pwdMD5 = MD5Util.encoderByMd5(pwd);
         mNetworkConnector.register(phone, pwdMD5, new NetCallBack() {
             @Override
+            public void onTokenInvalid() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        showProgress(false);
+                        isRegistering = false;
+                        ToastUtil.showToast(RegisterActivity.this, "登录信息已过期，请重新登录");
+                    }
+                });
+            }
+
+            @Override
             public void onNetworkError() {
                 runOnUiThread(new Runnable() {
                     @Override

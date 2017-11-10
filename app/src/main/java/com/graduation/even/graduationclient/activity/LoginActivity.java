@@ -104,6 +104,18 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         final String pwdMD5 = MD5Util.encoderByMd5(pwd);
         mNetworkConnector.login(phone, pwdMD5, new NetCallBack() {
             @Override
+            public void onTokenInvalid() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        showProgress(false);
+                        isLoggingIn = false;
+                        ToastUtil.showToast(LoginActivity.this, "登录信息已过期，请重新登录");
+                    }
+                });
+            }
+
+            @Override
             public void onNetworkError() {
                 runOnUiThread(new Runnable() {
                     @Override

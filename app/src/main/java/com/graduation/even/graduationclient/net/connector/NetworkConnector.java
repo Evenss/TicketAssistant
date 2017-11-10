@@ -62,6 +62,12 @@ public class NetworkConnector {
     public void login(String phone, String pwd, final NetCallBack callBack) {
         PLog.i("login, url is " + API.URL_LOGIN);
 
+        if (mUserInfo.isTokenInvalid()) {
+            PLog.e("user token is invalid");
+            callBack.onTokenInvalid();
+            return;
+        }
+
         LoginRequest loginRequest = new LoginRequest(phone, pwd);
         RequestBody body = RequestBody.create(JSON, mGson.toJson(loginRequest));
         Request request = new Request.Builder()
@@ -101,6 +107,12 @@ public class NetworkConnector {
     public void register(String phone, String pwd, final NetCallBack callBack) {
         PLog.i("register, url is " + API.URL_REGISTER);
 
+        if (mUserInfo.isTokenInvalid()) {
+            PLog.e("user token is invalid");
+            callBack.onTokenInvalid();
+            return;
+        }
+
         RegisterRequest registerRequest = new RegisterRequest(phone, pwd);
         RequestBody body = RequestBody.create(JSON, mGson.toJson(registerRequest));
         Request request = new Request.Builder()
@@ -139,6 +151,12 @@ public class NetworkConnector {
     public void logout(final NetCallBack callBack) {
         PLog.i("logout, url is " + API.URL_LOGOUT);
 
+        if (mUserInfo.isTokenInvalid()) {
+            PLog.e("user token is invalid");
+            callBack.onTokenInvalid();
+            return;
+        }
+
         String token = UserInfo.getInstance().getToken();
         LogoutRequest logoutRequest = new LogoutRequest(token);
         RequestBody body = RequestBody.create(JSON, mGson.toJson(logoutRequest));
@@ -175,6 +193,12 @@ public class NetworkConnector {
     //设置邮箱
     public void setEmail(String email, final NetCallBack callBack) {
         PLog.i("set email, url is " + API.URL_SET_EMAIL);
+
+        if (mUserInfo.isTokenInvalid()) {
+            PLog.e("user token is invalid");
+            callBack.onTokenInvalid();
+            return;
+        }
 
         String token = UserInfo.getInstance().getToken();
         int userId = UserInfo.getInstance().getUserId();
@@ -213,6 +237,12 @@ public class NetworkConnector {
     //修改密码
     public void changePwd(String oldPwd, String newPwd, final NetCallBack callBack) {
         PLog.i("change pwd, url is " + API.URL_CHANGE_PWD);
+
+        if (mUserInfo.isTokenInvalid()) {
+            PLog.e("user token is invalid");
+            callBack.onTokenInvalid();
+            return;
+        }
 
         String token = UserInfo.getInstance().getToken();
         int userId = UserInfo.getInstance().getUserId();
@@ -253,6 +283,12 @@ public class NetworkConnector {
     public void getTicketList(String departure, String destination, long date, boolean isGD,
                               int pageSize, int pageNumber, final NetCallBack callBack) {
         PLog.i("get ticket list, url is " + API.URL_TICKET_QUERY);
+
+        if (mUserInfo.isTokenInvalid()) {
+            PLog.e("user token is invalid");
+            callBack.onTokenInvalid();
+            return;
+        }
 
         TicketShowRequest ticketRequest =
                 new TicketShowRequest(departure, destination, date, isGD, pageSize, pageNumber);

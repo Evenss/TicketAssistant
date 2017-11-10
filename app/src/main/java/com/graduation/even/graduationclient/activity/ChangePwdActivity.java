@@ -55,15 +55,15 @@ public class ChangePwdActivity extends BaseActivity {
                 String oldPwdStr = oldPwdEt.getText().toString();
                 String newPwdStr = newPwdEt.getText().toString();
                 if (TextUtils.isEmpty(oldPwdStr)) {
-                    ToastUtil.showToast(ChangePwdActivity.this,"密码不能为空");
+                    ToastUtil.showToast(ChangePwdActivity.this, "密码不能为空");
                     return;
                 }
                 if (TextUtils.isEmpty(newPwdStr)) {
-                    ToastUtil.showToast(ChangePwdActivity.this,"密码不能为空");
+                    ToastUtil.showToast(ChangePwdActivity.this, "密码不能为空");
                     return;
                 }
-                if(oldPwdStr.equals(newPwdStr)){
-                    ToastUtil.showToast(ChangePwdActivity.this,"新密码不能与旧密码相同！");
+                if (oldPwdStr.equals(newPwdStr)) {
+                    ToastUtil.showToast(ChangePwdActivity.this, "新密码不能与旧密码相同！");
                     return;
                 }
                 changePwd(oldPwdStr, newPwdStr);
@@ -75,6 +75,11 @@ public class ChangePwdActivity extends BaseActivity {
         final String oldPwdMD5 = MD5Util.encoderByMd5(oldPwd);
         final String newPwdMD5 = MD5Util.encoderByMd5(newPwd);
         mNetworkConnector.changePwd(oldPwdMD5, newPwdMD5, new NetCallBack() {
+            @Override
+            public void onTokenInvalid() {
+                ToastUtil.showToastOnUIThread(ChangePwdActivity.this, "登录信息已过期，请重新登录");
+            }
+
             @Override
             public void onNetworkError() {
                 ToastUtil.showToastOnUIThread(ChangePwdActivity.this, "网络错误");

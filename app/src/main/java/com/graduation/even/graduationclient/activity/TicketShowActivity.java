@@ -92,7 +92,7 @@ public class TicketShowActivity extends BaseActivity implements View.OnClickList
         // 设置list
         mManager = new LinearLayoutManager(this);
         ticketShowRv.setLayoutManager(mManager);
-        mTicketAdapter = new TicketAdapter(this, mTicketList,false);
+        mTicketAdapter = new TicketAdapter(this, mTicketList, false);
 
 
     }
@@ -139,6 +139,11 @@ public class TicketShowActivity extends BaseActivity implements View.OnClickList
     private void getTicketList() {
         mNetworkConnector.getTicketList(mDeparture, mDestination,
                 mDate, mIsGD, PAGE_SIZE, mCurrentPage, new NetCallBack() {
+                    @Override
+                    public void onTokenInvalid() {
+                        ToastUtil.showToastOnUIThread(TicketShowActivity.this, "登录信息已过期，请重新登录");
+                    }
+
                     @Override
                     public void onNetworkError() {
                         ToastUtil.showToastOnUIThread(TicketShowActivity.this, "网络错误");
