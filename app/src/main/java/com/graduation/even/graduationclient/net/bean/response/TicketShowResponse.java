@@ -15,8 +15,6 @@ public class TicketShowResponse extends BaseResponse {
     public class Data{
         @SerializedName("pageNumber")
         public int pageNumber;
-        @SerializedName("firstPage")
-        public boolean firstPage;
         @SerializedName("lastPage")
         public boolean lastPage;
         @SerializedName("dptStation")
