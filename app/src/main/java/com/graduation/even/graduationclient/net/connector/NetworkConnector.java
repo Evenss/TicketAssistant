@@ -5,6 +5,7 @@ import com.graduation.even.graduationclient.constant.API;
 import com.graduation.even.graduationclient.net.bean.request.ChangePwdRequest;
 import com.graduation.even.graduationclient.net.bean.request.LoginRequest;
 import com.graduation.even.graduationclient.net.bean.request.LogoutRequest;
+import com.graduation.even.graduationclient.net.bean.request.MyOrderRequest;
 import com.graduation.even.graduationclient.net.bean.request.RegisterRequest;
 import com.graduation.even.graduationclient.net.bean.request.SetEmailRequest;
 import com.graduation.even.graduationclient.net.bean.request.SetMonitorRequest;
@@ -12,6 +13,7 @@ import com.graduation.even.graduationclient.net.bean.request.TicketShowRequest;
 import com.graduation.even.graduationclient.net.bean.response.ChangePwdResponse;
 import com.graduation.even.graduationclient.net.bean.response.LoginResponse;
 import com.graduation.even.graduationclient.net.bean.response.LogoutResponse;
+import com.graduation.even.graduationclient.net.bean.response.MyOrderResponse;
 import com.graduation.even.graduationclient.net.bean.response.RegisterResponse;
 import com.graduation.even.graduationclient.net.bean.response.SetEmailResponse;
 import com.graduation.even.graduationclient.net.bean.response.SetMonitorResponse;
@@ -372,6 +374,50 @@ public class NetworkConnector {
                 }
             }
         });
+    }
 
+    // 用户标记车次查询
+    public void getOrderList(int pageSize, int pageNumber, final NetCallBack callBack) {
+        PLog.i("get order, url is " + API.URL_MY_ORDER);
+
+        if (mUserInfo.isTokenInvalid()) {
+            PLog.e("user token is invalid");
+            callBack.onTokenInvalid();
+            return;
+        }
+
+        String token = UserInfo.getInstance().getToken();
+        int userId = UserInfo.getInstance().getUserId();
+        MyOrderRequest myOrderRequest = new MyOrderRequest(token, userId, pageSize, pageNumber);
+
+        RequestBody body = RequestBody.create(JSON, mGson.toJson(myOrderRequest));
+        Request request = new Request.Builder()
+                .url(API.URL_MY_ORDER)
+                .post(body)
+                .build();
+
+        Call call = mClient.newCall(request);
+        PLog.i("do enqueue");
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                PLog.i("failed to get order:" + e);
+                callBack.onNetworkError();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String string = response.body().string();
+                PLog.i("get order, response is " + string);
+                MyOrderResponse myOrderResponse = mGson.fromJson(string, MyOrderResponse.class);
+                if (myOrderResponse.isSuccess()) {
+                    PLog.i("success to get order");
+                    callBack.onSuccess(myOrderResponse.data);
+                } else {
+                    PLog.i("failed to get order:" + myOrderResponse.error);
+                    callBack.onFailed(myOrderResponse.error);
+                }
+            }
+        });
     }
 }

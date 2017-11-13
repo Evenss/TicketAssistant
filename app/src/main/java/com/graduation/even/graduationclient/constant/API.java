@@ -20,4 +20,5 @@ public class API {
     public static String URL_CHANGE_PWD = HOST + "/user/change_pwd";
     public static String URL_TICKET_QUERY = HOST + "/ticket/query";
     public static String URL_SET_MONITOR = HOST + "/ticket/set_monitor";
+    public static String URL_MY_ORDER = HOST + "/ticket/my_order";
 }
