@@ -1,7 +1,10 @@
 package com.graduation.even.graduationclient.activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,7 +23,9 @@ import com.graduation.even.graduationclient.util.ToastUtil;
 import com.graduation.even.graduationclient.util.ToolbarUtil;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.graduation.even.graduationclient.util.TimeUtil.getDayOfWeekInChinese;
 import static com.graduation.even.graduationclient.util.TimeUtil.getTimeCustomFormatted;
@@ -28,17 +33,20 @@ import static com.graduation.even.graduationclient.util.TimeUtil.getTimeFormatte
 
 public class TicketShowActivity extends BaseActivity implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
 
-    // UI
     private TextView titleTv, datePromptTv;
     private Button setMonitorBtn;
     private RecyclerView ticketShowRv;
     private SwipeRefreshLayout swipeRefreshLayout;
     private Toolbar mToolbar;
+    private FloatingActionButton submitBtn;
 
     private LinearLayoutManager mManager;
     private TicketAdapter mTicketAdapter;
     private NetworkConnector mNetworkConnector;
     private List<TicketShowResponse.Ticket> mTicketList;
+    private List<TicketShowResponse.Ticket> mTicketListSelected;//需要提交的车次list
+    private ArrayList<String> mTypesSubmit = new ArrayList<>();//需要提交的座位类型
+    private ArrayList<String> mTrainNoSubmit = new ArrayList<>();//需要提交的车次
 
     private int mCurrentPage = 1;
     private boolean mIsLastPage = false;
@@ -65,6 +73,7 @@ public class TicketShowActivity extends BaseActivity implements View.OnClickList
         setMonitorBtn = findViewById(R.id.btn_set_monitor);
         datePromptTv = findViewById(R.id.tv_date_prompt);
         ticketShowRv = findViewById(R.id.rv_ticket_show);
+        submitBtn = findViewById(R.id.btn_submit);
         swipeRefreshLayout = findViewById(R.id.swipe_layout);
     }
 
@@ -85,16 +94,16 @@ public class TicketShowActivity extends BaseActivity implements View.OnClickList
         // 初始化网络请求工具
         mNetworkConnector = NetworkConnector.getInstance();
 
-        // 获取list内容
+        // 初始化list
         mTicketList = new ArrayList<>();
+        mTicketListSelected = new ArrayList<>();
         getTicketList();
 
         // 设置list
         mManager = new LinearLayoutManager(this);
         ticketShowRv.setLayoutManager(mManager);
         mTicketAdapter = new TicketAdapter(this, mTicketList, false);
-
-
+        ticketShowRv.setAdapter(mTicketAdapter);
     }
 
     @Override
@@ -102,6 +111,20 @@ public class TicketShowActivity extends BaseActivity implements View.OnClickList
         setMonitorBtn.setOnClickListener(this);
         swipeRefreshLayout.setOnRefreshListener(this);
         new ToolbarUtil().initToolbar(this, mToolbar);
+
+        // 设置list点击事件
+        mTicketAdapter.setOnItemClickListener(new TicketAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position, boolean isAdd) {
+                PLog.i("adapter click position = " + position);
+                if (isAdd) {
+                    mTicketListSelected.add(mTicketList.get(position));
+                } else {
+                    mTicketListSelected.remove(mTicketList.get(position));
+                }
+                mTicketAdapter.notifyDataSetChanged();
+            }
+        });
 
         // 上拉加载
         ticketShowRv.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -122,8 +145,24 @@ public class TicketShowActivity extends BaseActivity implements View.OnClickList
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_set_monitor:
-                //todo
+                Button btn = (Button) view;
+                if ("抢票".equals(btn.getText().toString())) {
+                    btn.setText("取消");
+                    mTicketAdapter.setShowCheckBox(true);
+                    mTicketAdapter.notifyDataSetChanged();
+                    // 显示悬浮按
+                    submitBtn.setVisibility(View.VISIBLE);
+                } else {
+                    btn.setText("抢票");
+                    mTicketAdapter.setShowCheckBox(false);
+                    mTicketAdapter.notifyDataSetChanged();
+                    mTicketListSelected.clear();
+                    // 显示隐藏按钮
+                    submitBtn.setVisibility(View.GONE);
+                }
                 break;
+            case R.id.btn_submit:
+                createSeatsDialog();
         }
     }
 
@@ -170,6 +209,34 @@ public class TicketShowActivity extends BaseActivity implements View.OnClickList
                 });
     }
 
+    /* 票余量监听 */
+    private void setMonitor() {
+        getTrainNo();
+        mNetworkConnector.setMonitor(mDeparture, mDestination, mDate, mTrainNoSubmit, mTypesSubmit,
+                new NetCallBack() {
+                    @Override
+                    public void onTokenInvalid() {
+                        ToastUtil.showToastOnUIThread(TicketShowActivity.this, "登录信息已过期，请重新登录");
+                    }
+
+                    @Override
+                    public void onNetworkError() {
+                        ToastUtil.showToastOnUIThread(TicketShowActivity.this, "网络错误");
+                    }
+
+                    @Override
+                    public void onFailed(String error) {
+                        ToastUtil.showToastOnUIThread(TicketShowActivity.this, error);
+                    }
+
+                    @Override
+                    public void onSuccess(Object object) {
+                        // todo 提示修改方式修改一下
+                        ToastUtil.showToastOnUIThread(TicketShowActivity.this, "开始监控票余量");
+                    }
+                });
+    }
+
     // 上拉加载
     private void getMoreTicket() {
         PLog.i("load more ticket");
@@ -182,4 +249,103 @@ public class TicketShowActivity extends BaseActivity implements View.OnClickList
         }
     }
 
+    // 创建座位类型选择框
+    private void createSeatsDialog() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("选择要提醒的座位类型");
+        builder.setCancelable(false);
+        final ArrayList<String> typeList = new ArrayList<>();
+        if (checkGDType()) {
+            typeList.add("商务座");
+            typeList.add("一等座");
+            typeList.add("二等座");
+        }
+        if (checkNormalType()) {
+            typeList.add("软卧");
+            typeList.add("硬卧");
+            typeList.add("硬座");
+            typeList.add("无座");
+        }
+
+        builder.setMultiChoiceItems(typeList.toArray(new String[0]), null,
+                new DialogInterface.OnMultiChoiceClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+                        String seatName = getSeatType(typeList.get(which));
+                        if (isChecked) {
+                            mTypesSubmit.add(seatName);
+                        } else {
+                            for (int i = 0; i < mTypesSubmit.size(); i++) {
+                                if (mTypesSubmit.get(i).equals(seatName)) {
+                                    mTypesSubmit.remove(i);
+                                }
+                            }
+                        }
+                    }
+                });
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                setMonitor();
+            }
+        });
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                mTypesSubmit.clear();
+
+            }
+        });
+        builder.show();
+    }
+
+    // 动态展示车型
+    private boolean checkGDType() {
+        for (int i = 0; i < mTicketListSelected.size(); i++) {
+            String str = mTicketListSelected.get(i).trainNo.substring(0, 1);
+            if (str.equals("G") || str.equals("D")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean checkNormalType() {
+        for (int i = 0; i < mTicketListSelected.size(); i++) {
+            String str = mTicketListSelected.get(i).trainNo.substring(0, 1);
+            if (str.equals("Z") || str.equals("T") || str.equals("K")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // 获取车次
+    private void getTrainNo() {
+        for (int i = 0; i < mTicketListSelected.size(); i++) {
+            mTrainNoSubmit.add(mTicketListSelected.get(i).trainNo);
+        }
+    }
+
+    // 获取车次类型
+    private String getSeatType(String seatName) {
+        switch (seatName) {
+            case "商务座":
+                return "business";
+            case "一等座":
+                return "one";
+            case "二等座":
+                return "two";
+            case "软卧":
+                return "soft";
+            case "硬卧":
+                return "hardSleep";
+            case "硬座":
+                return "hardSeat";
+            case "无座":
+                return "zero";
+            default:
+                return "";
+        }
+    }
 }

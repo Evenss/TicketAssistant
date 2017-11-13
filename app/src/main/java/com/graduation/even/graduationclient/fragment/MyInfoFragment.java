@@ -146,12 +146,12 @@ public class MyInfoFragment extends BaseFragment implements View.OnClickListener
                     @Override
                     public void run() {
                         if (isEmailLegal(emailStr)) {
-                            PLog.i("Legal");
+                            PLog.i("email legal");
                             mUserInfo.setEmail(emailStr);
                             setEmail(emailStr);
                             dialog.dismiss();
                         } else {
-                            PLog.i("not Legal");
+                            PLog.i("email not legal");
                             email.setError("输入邮箱不合法！");
                         }
                     }

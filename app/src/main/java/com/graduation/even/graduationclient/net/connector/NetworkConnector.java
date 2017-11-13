@@ -7,12 +7,14 @@ import com.graduation.even.graduationclient.net.bean.request.LoginRequest;
 import com.graduation.even.graduationclient.net.bean.request.LogoutRequest;
 import com.graduation.even.graduationclient.net.bean.request.RegisterRequest;
 import com.graduation.even.graduationclient.net.bean.request.SetEmailRequest;
+import com.graduation.even.graduationclient.net.bean.request.SetMonitorRequest;
 import com.graduation.even.graduationclient.net.bean.request.TicketShowRequest;
 import com.graduation.even.graduationclient.net.bean.response.ChangePwdResponse;
 import com.graduation.even.graduationclient.net.bean.response.LoginResponse;
 import com.graduation.even.graduationclient.net.bean.response.LogoutResponse;
 import com.graduation.even.graduationclient.net.bean.response.RegisterResponse;
 import com.graduation.even.graduationclient.net.bean.response.SetEmailResponse;
+import com.graduation.even.graduationclient.net.bean.response.SetMonitorResponse;
 import com.graduation.even.graduationclient.net.bean.response.TicketShowResponse;
 import com.graduation.even.graduationclient.net.callback.NetCallBack;
 import com.graduation.even.graduationclient.user.UserInfo;
@@ -20,6 +22,7 @@ import com.graduation.even.graduationclient.util.MD5Util;
 import com.graduation.even.graduationclient.util.PLog;
 
 import java.io.IOException;
+import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -322,5 +325,53 @@ public class NetworkConnector {
                 }
             }
         });
+    }
+
+    // 设置票余量监控
+    public void setMonitor(String dptStation, String arrStation, long startDate,
+                           List<String> trainNo, List<String> seats, final NetCallBack callBack) {
+        PLog.i("set monitor, url is " + API.URL_SET_MONITOR);
+
+        if (mUserInfo.isTokenInvalid()) {
+            PLog.e("user token is invalid");
+            callBack.onTokenInvalid();
+            return;
+        }
+
+        String token = UserInfo.getInstance().getToken();
+        int userId = UserInfo.getInstance().getUserId();
+        SetMonitorRequest setMonitorRequest =
+                new SetMonitorRequest(token, userId, dptStation, arrStation, startDate, trainNo, seats);
+
+        RequestBody body = RequestBody.create(JSON, mGson.toJson(setMonitorRequest));
+        Request request = new Request.Builder()
+                .url(API.URL_SET_MONITOR)
+                .post(body)
+                .build();
+
+        Call call = mClient.newCall(request);
+        PLog.i("do enqueue");
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                PLog.i("failed to set monitor:" + e);
+                callBack.onNetworkError();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String string = response.body().string();
+                PLog.i("set monitor, response is " + string);
+                SetMonitorResponse setMonitorResponse = mGson.fromJson(string, SetMonitorResponse.class);
+                if (setMonitorResponse.isSuccess()) {
+                    PLog.i("success to set monitor");
+                    callBack.onSuccess(null);
+                } else {
+                    PLog.i("failed to set monitor:" + setMonitorResponse.error);
+                    callBack.onFailed(setMonitorResponse.error);
+                }
+            }
+        });
+
     }
 }

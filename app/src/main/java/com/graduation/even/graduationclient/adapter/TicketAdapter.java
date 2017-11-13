@@ -28,7 +28,7 @@ public class TicketAdapter extends RecyclerView.Adapter<TicketAdapter.MyViewHold
 
     // 点击接口
     public interface OnItemClickListener {
-        void onItemClick(View view, int position);
+        void onItemClick(View view, int position, boolean isAdd);
     }
 
     // 设置点击接口
@@ -59,7 +59,8 @@ public class TicketAdapter extends RecyclerView.Adapter<TicketAdapter.MyViewHold
                 public void onClick(View v) {
                     PLog.i("holder item click position = " + position);
                     int pos = holder.getLayoutPosition();
-                    mOnItemClickListener.onItemClick(holder.itemView, pos);
+                    boolean isAdd = !holder.selected.isChecked();
+                    mOnItemClickListener.onItemClick(holder.itemView, pos, isAdd);
                 }
             });
         }
@@ -79,7 +80,13 @@ public class TicketAdapter extends RecyclerView.Adapter<TicketAdapter.MyViewHold
 
     @Override
     public int getItemCount() {
-        return ticketList.size();
+//        return ticketList.size();
+        return 2;
+    }
+
+    // 设置是否显示复选框
+    public void setShowCheckBox(boolean showCheckBox) {
+        isShowCheckBox = showCheckBox;
     }
 
     // 设置座位信息
