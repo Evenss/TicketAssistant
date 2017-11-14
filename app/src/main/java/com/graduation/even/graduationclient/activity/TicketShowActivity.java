@@ -45,8 +45,8 @@ public class TicketShowActivity extends BaseActivity implements View.OnClickList
     private NetworkConnector mNetworkConnector;
     private List<TicketShowResponse.Ticket> mTicketList;
     private List<TicketShowResponse.Ticket> mTicketListSelected;//需要提交的车次list
-    private ArrayList<String> mTypesSubmit = new ArrayList<>();//需要提交的座位类型
-    private ArrayList<String> mTrainNoSubmit = new ArrayList<>();//需要提交的车次
+    private ArrayList<String> mTypesSubmit;//需要提交的座位类型
+    private ArrayList<String> mTrainNoSubmit;//需要提交的车次
 
     private int mCurrentPage = 1;
     private boolean mIsLastPage = false;
@@ -97,6 +97,8 @@ public class TicketShowActivity extends BaseActivity implements View.OnClickList
         // 初始化list
         mTicketList = new ArrayList<>();
         mTicketListSelected = new ArrayList<>();
+        mTypesSubmit = new ArrayList<>();
+        mTrainNoSubmit = new ArrayList<>();
         getTicketList();
 
         // 设置list
@@ -233,6 +235,8 @@ public class TicketShowActivity extends BaseActivity implements View.OnClickList
                     public void onSuccess(Object object) {
                         // todo 提示修改方式修改一下
                         ToastUtil.showToastOnUIThread(TicketShowActivity.this, "开始监控票余量");
+                        // 清空数据
+                        clearData();
                     }
                 });
     }
@@ -347,5 +351,14 @@ public class TicketShowActivity extends BaseActivity implements View.OnClickList
             default:
                 return "";
         }
+    }
+
+    // 清空数据
+    private void clearData() {
+        mTicketListSelected.clear();
+        mTypesSubmit.clear();
+        mTrainNoSubmit.clear();
+        mCurrentPage = 1;
+        mIsLastPage = false;
     }
 }
