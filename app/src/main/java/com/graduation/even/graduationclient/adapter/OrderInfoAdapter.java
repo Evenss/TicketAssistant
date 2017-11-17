@@ -43,7 +43,7 @@ public class OrderInfoAdapter extends RecyclerView.Adapter<OrderInfoAdapter.MyVi
         String time = TimeUtil.getTimeFormatted(order.startDate, "yyyy-MM-dd HH:mm");
         holder.timeTv.setText("出发时间：" + time);
         holder.trainNumTv.setText(order.trainNo);
-        if (order.state == 0) {
+        if (order.state == 1) {
             holder.stateTv.setText("已完成");
         } else {
             holder.stateTv.setText("票量监控中");
