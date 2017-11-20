@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.graduation.even.graduationclient">
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <meta-data
         android:name="com.amap.api.v2.apikey"
         android:value="7f2e6895baceee9d6472c45c43ca3789" />

@@ -67,12 +67,6 @@ public class NetworkConnector {
     public void login(String phone, String pwd, final NetCallBack callBack) {
         PLog.i("login, url is " + API.URL_LOGIN);
 
-        if (mUserInfo.isTokenInvalid()) {
-            PLog.e("user token is invalid");
-            callBack.onTokenInvalid();
-            return;
-        }
-
         LoginRequest loginRequest = new LoginRequest(phone, pwd);
         RequestBody body = RequestBody.create(JSON, mGson.toJson(loginRequest));
         Request request = new Request.Builder()
