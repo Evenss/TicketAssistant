@@ -10,6 +10,16 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        manifestPlaceholders = [
+                GETUI_APP_ID : "f14jeuBHYk9N2y53iaAbl1",
+                GETUI_APP_KEY : "omDMWIqrKNAjMAWJYCt9QA",
+                GETUI_APP_SECRET : "CKl2r4L16c5vAjpB6zMpN"
+        ]
+
+        ndk {
+            abiFilters "armeabi", "armeabi-v7a", "x86_64"
+        }
     }
     buildTypes {
         release {
@@ -35,5 +45,6 @@ dependencies {
     compile 'de.hdodenhof:circleimageview:2.2.0'
     compile 'com.squareup.okhttp3:okhttp:3.7.0'
     compile 'com.google.code.gson:gson:2.8.0'
+    compile 'com.getui:sdk:2.11.1.0'
     testCompile 'junit:junit:4.12'
 }

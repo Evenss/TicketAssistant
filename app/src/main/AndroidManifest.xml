@@ -3,6 +3,12 @@
     package="com.graduation.even.graduationclient">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- iBeancon功能所需权限 -->
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+    <!-- 个推3.0电子围栏功能所需权限 -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <meta-data
         android:name="com.amap.api.v2.apikey"
@@ -26,6 +32,12 @@
             </intent-filter>
         </activity>
 
+        <service
+            android:name=".service.PushService"
+            android:exported="true"
+            android:label="PushService"
+            android:process=":pushservice"/>
+        <service android:name=".service.PushIntentService"/>
         <!-- 高德地图 -->
         <activity
             android:name="com.zaaach.citypicker.CityPickerActivity"

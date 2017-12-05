@@ -7,6 +7,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import com.graduation.even.graduationclient.application.MyApplication;
+import com.graduation.even.graduationclient.service.PushIntentService;
+import com.graduation.even.graduationclient.service.PushService;
+import com.igexin.sdk.PushManager;
 
 public abstract class BaseActivity extends AppCompatActivity {
 
@@ -24,6 +27,11 @@ public abstract class BaseActivity extends AppCompatActivity {
         if (forceScreenOrientationPortrait()){
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
+
+        // 第三方自定义推送服务
+        PushManager.getInstance().initialize(this.getApplicationContext(), PushService.class);
+        // 第三方自定义的推送服务事件接收类
+        PushManager.getInstance().registerPushIntentService(this.getApplicationContext(), PushIntentService.class);
 
         initView();
         initData();
