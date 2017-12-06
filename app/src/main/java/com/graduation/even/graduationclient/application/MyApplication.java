@@ -6,6 +6,9 @@ import android.content.Intent;
 
 import com.graduation.even.graduationclient.activity.LoginActivity;
 import com.graduation.even.graduationclient.activity.MainActivity;
+import com.graduation.even.graduationclient.service.PushIntentService;
+import com.graduation.even.graduationclient.service.PushService;
+import com.igexin.sdk.PushManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +22,16 @@ public class MyApplication extends Application{
 
     public MyApplication(){
         activityList = new ArrayList<>();
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+        // 第三方自定义推送服务
+        PushManager.getInstance().initialize(this.getApplicationContext(), PushService.class);
+        // 第三方自定义的推送服务事件接收类
+        PushManager.getInstance().registerPushIntentService(this.getApplicationContext(), PushIntentService.class);
     }
 
     public void addActivity(Activity activity){

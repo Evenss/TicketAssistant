@@ -150,12 +150,6 @@ public class NetworkConnector {
     public void logout(final NetCallBack callBack) {
         PLog.i("logout, url is " + API.URL_LOGOUT);
 
-        if (mUserInfo.isTokenInvalid()) {
-            PLog.e("user token is invalid");
-            callBack.onTokenInvalid();
-            return;
-        }
-
         String token = UserInfo.getInstance().getToken();
         LogoutRequest logoutRequest = new LogoutRequest(token);
         RequestBody body = RequestBody.create(JSON, mGson.toJson(logoutRequest));

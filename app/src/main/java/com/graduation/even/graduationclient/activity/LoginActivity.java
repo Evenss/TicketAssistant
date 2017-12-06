@@ -18,6 +18,7 @@ import com.graduation.even.graduationclient.util.PLog;
 import com.graduation.even.graduationclient.util.SharedPreferencesUtil;
 import com.graduation.even.graduationclient.util.ToastUtil;
 import com.graduation.even.graduationclient.util.ToolbarUtil;
+import com.igexin.sdk.PushManager;
 
 public class LoginActivity extends BaseActivity implements View.OnClickListener {
 
@@ -149,6 +150,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                         //向本地文件中写入数据
                         mSPUtil.writePhone(phone);
                         mSPUtil.writePassword(pwdMD5);
+                        bindAlias(phone);
                         // 开启下一个活动
                         Intent intent = getIntent();
                         intent.putExtra("isLogin", true);
@@ -159,6 +161,20 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
             }
         });
+    }
+
+    // 绑定第三方推送的别名
+    private void bindAlias(final String phone) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if(PushManager.getInstance().bindAlias(LoginActivity.this, phone)){
+                    PLog.i("bind alias success");
+                }else{
+                    PLog.e("bind alias error");
+                }
+            }
+        }).start();
     }
 
     private void showProgress(boolean show) {

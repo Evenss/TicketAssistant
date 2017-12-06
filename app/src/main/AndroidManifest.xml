@@ -9,6 +9,9 @@
     <!-- 个推3.0电子围栏功能所需权限 -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <!-- 浮动通知权限 -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <uses-permission android:name="getui.permission.GetuiService.${applicationId}"/>
 
     <meta-data
         android:name="com.amap.api.v2.apikey"
@@ -32,11 +35,13 @@
             </intent-filter>
         </activity>
 
+        <!-- 用户自定义服务名 -->
         <service
             android:name=".service.PushService"
             android:exported="true"
             android:label="PushService"
             android:process=":pushservice"/>
+        <!-- 用户自定义服务继承自GTIntentService,作为SDK与APP桥梁服务,用来接收各种消息和命令回复-->
         <service android:name=".service.PushIntentService"/>
         <!-- 高德地图 -->
         <activity

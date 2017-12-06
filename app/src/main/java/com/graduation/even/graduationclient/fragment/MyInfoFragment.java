@@ -20,6 +20,7 @@ import com.graduation.even.graduationclient.net.connector.NetworkConnector;
 import com.graduation.even.graduationclient.user.UserInfo;
 import com.graduation.even.graduationclient.util.PLog;
 import com.graduation.even.graduationclient.util.ToastUtil;
+import com.igexin.sdk.PushManager;
 
 import static android.app.Activity.RESULT_OK;
 import static com.graduation.even.graduationclient.util.StringUtil.isEmailLegal;
@@ -161,13 +162,13 @@ public class MyInfoFragment extends BaseFragment implements View.OnClickListener
         });
     }
 
-    // 登录
+    // 登出
     private void logout() {
         mNetworkConnector.logout(new NetCallBack() {
             @Override
             public void onTokenInvalid() {
-                ToastUtil.showToastOnUIThread(getActivity(), "登录信息已过期，请重新登录");
             }
+
             @Override
             public void onNetworkError() {
                 ToastUtil.showToastOnUIThread(getActivity(), "网络错误");
@@ -183,12 +184,27 @@ public class MyInfoFragment extends BaseFragment implements View.OnClickListener
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        unBindAlias();
                         ((MainActivity) getActivity()).bakcToMain();
                         ToastUtil.showToast(getActivity(), "退出登录成功");
                     }
                 });
             }
         });
+    }
+
+    // 解除绑定第三方推送的别名
+    private void unBindAlias() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (PushManager.getInstance().unBindAlias(getContext(), mUserInfo.getPhone(), true)) {
+                    PLog.i("unBind alias success");
+                } else {
+                    PLog.e("unBind alias error");
+                }
+            }
+        }).start();
     }
 
     //设置邮箱
@@ -198,6 +214,7 @@ public class MyInfoFragment extends BaseFragment implements View.OnClickListener
             public void onTokenInvalid() {
                 ToastUtil.showToastOnUIThread(getActivity(), "登录信息已过期，请重新登录");
             }
+
             @Override
             public void onNetworkError() {
                 ToastUtil.showToastOnUIThread(getActivity(), "网络错误");

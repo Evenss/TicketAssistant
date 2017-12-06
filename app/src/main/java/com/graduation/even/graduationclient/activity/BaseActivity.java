@@ -28,11 +28,6 @@ public abstract class BaseActivity extends AppCompatActivity {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
 
-        // 第三方自定义推送服务
-        PushManager.getInstance().initialize(this.getApplicationContext(), PushService.class);
-        // 第三方自定义的推送服务事件接收类
-        PushManager.getInstance().registerPushIntentService(this.getApplicationContext(), PushIntentService.class);
-
         initView();
         initData();
         initEvent();
