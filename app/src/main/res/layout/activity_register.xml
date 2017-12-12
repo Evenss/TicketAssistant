@@ -25,13 +25,6 @@
             android:textSize="21sp" />
     </android.support.v7.widget.Toolbar>
 
-    <ProgressBar
-        android:id="@+id/progress_bar"
-        android:visibility="gone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"/>
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="290dp"
@@ -176,6 +169,13 @@
                 android:textColor="@color/loginTextBlue"
                 android:background="@drawable/bg_register_blank_line"/>
         </LinearLayout>
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"/>
 
     </RelativeLayout>
 

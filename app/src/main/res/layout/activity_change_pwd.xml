@@ -43,6 +43,7 @@
         android:layout_marginRight="15dp"
         android:paddingLeft="10dp"
         android:hint="请输入原始密码"
+        android:inputType="textPassword"
         android:singleLine="true"
         android:textSize="14sp"
         android:background="@drawable/bg_change_pwd_gray"/>
@@ -62,6 +63,7 @@
         android:layout_marginRight="15dp"
         android:paddingLeft="10dp"
         android:hint="请输入新密码"
+        android:inputType="textPassword"
         android:singleLine="true"
         android:textSize="14sp"
         android:background="@drawable/bg_change_pwd_gray"/>

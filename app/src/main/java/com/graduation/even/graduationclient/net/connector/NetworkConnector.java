@@ -129,8 +129,8 @@ public class NetworkConnector {
                 RegisterResponse registerResponse = mGson.fromJson(string, RegisterResponse.class);
                 if (registerResponse.isSuccess()) {
                     PLog.i("success to register");
-                    mUserInfo.setInfo(registerResponse.data.userId, registerResponse.data.token,
-                            registerResponse.data.phone, registerResponse.data.invalidTime);
+                    mUserInfo.setInfo(registerResponse.data.userId, registerResponse.data.phone,
+                            registerResponse.data.token, registerResponse.data.invalidTime);
                     callBack.onSuccess(null);
                 } else {
                     PLog.i("failed to register:" + registerResponse.error);

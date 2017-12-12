@@ -98,6 +98,7 @@ public class ChangePwdActivity extends BaseActivity {
             public void onSuccess(Object object) {
                 ToastUtil.showToastOnUIThread(ChangePwdActivity.this, "修改密码成功");
                 mSPUtil.writePassword(newPwdMD5);
+                finish();
             }
         });
     }

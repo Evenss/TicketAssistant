@@ -2,7 +2,9 @@ package com.graduation.even.graduationclient.activity;
 
 import android.content.Intent;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -32,6 +34,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     private NetworkConnector mNetworkConnector;
     private SharedPreferencesUtil mSPUtil;
     private boolean isLoggingIn = false;
+    private String mPwdMD5 = "";
 
     private final static int REGISTER_REQUEST_CODE = 2;
 
@@ -59,6 +62,12 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     protected void initData() {
         mNetworkConnector = NetworkConnector.getInstance();
         mSPUtil = SharedPreferencesUtil.getInstance(this);
+
+        if (!TextUtils.isEmpty(mSPUtil.getPhone())) {
+            phoneEt.setText(mSPUtil.getPhone());
+            pwdEt.setText(mSPUtil.getPassword());
+            mPwdMD5 = pwdEt.getText().toString();
+        }
     }
 
     @Override
@@ -102,7 +111,14 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             isLoggingIn = true;
 
         showProgress(true);
-        final String pwdMD5 = MD5Util.encoderByMd5(pwd);
+        final String pwdMD5;
+        if (mPwdMD5.equals(pwdEt.getText().toString())) {
+            PLog.i("use saved pwd");
+            pwdMD5 = mPwdMD5;
+        } else {
+            PLog.i("use unsaved pwd");
+            pwdMD5 = MD5Util.encoderByMd5(pwd);
+        }
         mNetworkConnector.login(phone, pwdMD5, new NetCallBack() {
             @Override
             public void onTokenInvalid() {
@@ -168,9 +184,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         new Thread(new Runnable() {
             @Override
             public void run() {
-                if(PushManager.getInstance().bindAlias(LoginActivity.this, phone)){
+                if (PushManager.getInstance().bindAlias(LoginActivity.this, phone)) {
                     PLog.i("bind alias success");
-                }else{
+                } else {
                     PLog.e("bind alias error");
                 }
             }
@@ -192,6 +208,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 case REGISTER_REQUEST_CODE:
                     PLog.i("REGISTER_REQUEST_CODE");
                     if (data != null && data.getBooleanExtra("isRegister", false)) {
+                        Intent intent = getIntent();
+                        intent.putExtra("isLogin", true);
+                        setResult(RESULT_OK, intent);
                         finish();//用户已经注册，跳过登录
                     }
                     break;
