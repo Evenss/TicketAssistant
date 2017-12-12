@@ -15,8 +15,6 @@ public class BaseResponse {
     @SerializedName("error")
     public String error;
 
-    public Object data;
-
     public boolean isSuccess() {
         return state == 0;
     }

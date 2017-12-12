@@ -7,13 +7,13 @@ package com.graduation.even.graduationclient.net.bean.request;
 public class ChangePwdRequest {
     private String token;
     private int userId;
-    private String pwdOld;
-    private String pwdNew;
+    private String passwordOld;
+    private String passwordNew;
 
     public ChangePwdRequest(String token, int userId, String pwdOld, String pwdNew) {
         this.token = token;
         this.userId = userId;
-        this.pwdOld = pwdOld;
-        this.pwdNew = pwdNew;
+        this.passwordOld = pwdOld;
+        this.passwordNew = pwdNew;
     }
 }

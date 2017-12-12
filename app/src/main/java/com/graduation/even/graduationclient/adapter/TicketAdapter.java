@@ -64,6 +64,9 @@ public class TicketAdapter extends RecyclerView.Adapter<TicketAdapter.MyViewHold
                 }
             });
         }
+        if(ticketList.size() == 0){
+            return;
+        }
         TicketShowResponse.Ticket ticket = ticketList.get(position);
         holder.start.setText(ticket.dptStationName);
         holder.startDate.setText(ticket.dptTime);
@@ -80,8 +83,7 @@ public class TicketAdapter extends RecyclerView.Adapter<TicketAdapter.MyViewHold
 
     @Override
     public int getItemCount() {
-//        return ticketList.size();
-        return 2;
+        return ticketList.size();
     }
 
     // 设置是否显示复选框

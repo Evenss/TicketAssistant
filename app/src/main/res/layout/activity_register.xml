@@ -73,31 +73,7 @@
                     android:background="@drawable/bg_shape_rectangle_gray"/>
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/bg_shape_rectangle_gray" >
-                <ImageView
-                    android:layout_gravity="center_vertical"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_marginLeft="10dp"
-                    android:src="@mipmap/icon_verification"/>
-                <EditText
-                    android:id="@+id/et_check_code"
-                    android:gravity="center_vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:textColor="@color/black"
-                    android:hint="验证码"
-                    android:inputType="number"
-                    android:maxLength="4"
-                    android:textSize="15dp"
-                    android:textColorHint="@color/loginDeepGray"
-                    android:paddingLeft="10dp"
-                    android:background="@drawable/bg_shape_rectangle_gray"/>
-            </LinearLayout>
+
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -148,6 +124,33 @@
                     android:paddingLeft="10dp"
                     android:background="@drawable/bg_shape_rectangle_gray"/>
             </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/bg_shape_rectangle_gray" >
+                <ImageView
+                    android:layout_gravity="center_vertical"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginLeft="10dp"
+                    android:src="@mipmap/icon_verification"/>
+                <EditText
+                    android:id="@+id/et_check_code"
+                    android:gravity="center_vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textColor="@color/black"
+                    android:hint="验证码"
+                    android:inputType="number"
+                    android:maxLength="4"
+                    android:textSize="15dp"
+                    android:textColorHint="@color/loginDeepGray"
+                    android:paddingLeft="10dp"
+                    android:background="@drawable/bg_shape_rectangle_gray"/>
+            </LinearLayout>
+
         </LinearLayout>
 
         <LinearLayout

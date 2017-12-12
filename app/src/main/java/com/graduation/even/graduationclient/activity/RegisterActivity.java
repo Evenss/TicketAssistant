@@ -12,6 +12,7 @@ import com.graduation.even.graduationclient.R;
 import com.graduation.even.graduationclient.net.callback.NetCallBack;
 import com.graduation.even.graduationclient.net.connector.NetworkConnector;
 import com.graduation.even.graduationclient.util.MD5Util;
+import com.graduation.even.graduationclient.util.PLog;
 import com.graduation.even.graduationclient.util.SharedPreferencesUtil;
 import com.graduation.even.graduationclient.util.ToastUtil;
 import com.graduation.even.graduationclient.util.ToolbarUtil;
@@ -79,6 +80,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                 int code = getRandom4Num();
                 mCode = String.valueOf(code);
                 showCodeDialog(mCode);
+                PLog.i("验证码:" + mCode);
                 break;
             case R.id.btn_register:
                 String phone = phoneEt.getText().toString();
@@ -87,11 +89,11 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                     phoneEt.setError("输入手机号不合法！");
                     return;
                 }
-                if (checkCodeEt.getText().toString() != mCode) {
+                if (!checkCodeEt.getText().toString().equals(mCode)) {
                     checkCodeEt.setError("验证码不正确！");
                     return;
                 }
-                if (confirmPwdEt.getText().toString() != pwd) {
+                if (!confirmPwdEt.getText().toString().equals(pwd)) {
                     confirmPwdEt.setError("两次输入密码不一致！");
                     return;
                 }

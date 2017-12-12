@@ -106,12 +106,6 @@ public class NetworkConnector {
     public void register(String phone, String pwd, final NetCallBack callBack) {
         PLog.i("register, url is " + API.URL_REGISTER);
 
-        if (mUserInfo.isTokenInvalid()) {
-            PLog.e("user token is invalid");
-            callBack.onTokenInvalid();
-            return;
-        }
-
         RegisterRequest registerRequest = new RegisterRequest(phone, pwd);
         RequestBody body = RequestBody.create(JSON, mGson.toJson(registerRequest));
         Request request = new Request.Builder()
@@ -276,12 +270,6 @@ public class NetworkConnector {
     public void getTicketList(String departure, String destination, long date, boolean isGD,
                               int pageSize, int pageNumber, final NetCallBack callBack) {
         PLog.i("get ticket list, url is " + API.URL_TICKET_QUERY);
-
-        if (mUserInfo.isTokenInvalid()) {
-            PLog.e("user token is invalid");
-            callBack.onTokenInvalid();
-            return;
-        }
 
         TicketShowRequest ticketRequest =
                 new TicketShowRequest(departure, destination, date, isGD, pageSize, pageNumber);

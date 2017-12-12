@@ -182,7 +182,6 @@ public class TicketShowActivity extends BaseActivity implements View.OnClickList
                 mDate, mIsGD, PAGE_SIZE, mCurrentPage, new NetCallBack() {
                     @Override
                     public void onTokenInvalid() {
-                        ToastUtil.showToastOnUIThread(TicketShowActivity.this, "登录信息已过期，请重新登录");
                     }
 
                     @Override
