@@ -111,7 +111,6 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/tv_price"
                     android:layout_centerHorizontal="true"
-                    android:clickable="false"
                     android:visibility="invisible" />
 
             </RelativeLayout>

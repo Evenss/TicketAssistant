@@ -21,6 +21,7 @@ import com.graduation.even.graduationclient.net.connector.NetworkConnector;
 import com.graduation.even.graduationclient.util.PLog;
 import com.graduation.even.graduationclient.util.ToastUtil;
 import com.graduation.even.graduationclient.util.ToolbarUtil;
+import com.graduation.even.graduationclient.util.WrapContentLinearLayoutManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -102,7 +103,8 @@ public class TicketShowActivity extends BaseActivity implements View.OnClickList
         getTicketList();
 
         // 设置list
-        mManager = new LinearLayoutManager(this);
+//        mManager = new LinearLayoutManager(this);
+        mManager = new WrapContentLinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         ticketShowRv.setLayoutManager(mManager);
         mTicketAdapter = new TicketAdapter(this, mTicketList, false);
         ticketShowRv.setAdapter(mTicketAdapter);
@@ -111,22 +113,23 @@ public class TicketShowActivity extends BaseActivity implements View.OnClickList
     @Override
     protected void initEvent() {
         setMonitorBtn.setOnClickListener(this);
+        submitBtn.setOnClickListener(this);
         swipeRefreshLayout.setOnRefreshListener(this);
         new ToolbarUtil().initToolbar(this, mToolbar);
 
         // 设置list点击事件
-        mTicketAdapter.setOnItemClickListener(new TicketAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position, boolean isAdd) {
-                PLog.i("adapter click position = " + position);
-                if (isAdd) {
-                    mTicketListSelected.add(mTicketList.get(position));
-                } else {
-                    mTicketListSelected.remove(mTicketList.get(position));
-                }
-                mTicketAdapter.notifyDataSetChanged();
-            }
-        });
+//        mTicketAdapter.setOnItemClickListener(new TicketAdapter.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(View view, int position, boolean isAdd) {
+//                PLog.i("adapter click position = " + position);
+//                if (isAdd) {
+//                    mTicketListSelected.add(mTicketList.get(position));
+//                } else {
+//                    mTicketListSelected.remove(mTicketList.get(position));
+//                }
+//                mTicketAdapter.notifyDataSetChanged();
+//            }
+//        });
 
         // 上拉加载
         ticketShowRv.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -152,19 +155,22 @@ public class TicketShowActivity extends BaseActivity implements View.OnClickList
                     btn.setText("取消");
                     mTicketAdapter.setShowCheckBox(true);
                     mTicketAdapter.notifyDataSetChanged();
-                    // 显示悬浮按
+                    // 显示悬浮按钮
                     submitBtn.setVisibility(View.VISIBLE);
                 } else {
                     btn.setText("抢票");
                     mTicketAdapter.setShowCheckBox(false);
                     mTicketAdapter.notifyDataSetChanged();
+                    initInfo();
                     mTicketListSelected.clear();
                     // 显示隐藏按钮
                     submitBtn.setVisibility(View.GONE);
                 }
                 break;
             case R.id.btn_submit:
+                getSubmitTicket();
                 createSeatsDialog();
+                break;
         }
     }
 
@@ -172,6 +178,7 @@ public class TicketShowActivity extends BaseActivity implements View.OnClickList
     @Override
     public void onRefresh() {
         PLog.i("onRefresh");
+        mTicketList.clear();
         mCurrentPage = 1;
         getTicketList();
     }
@@ -198,7 +205,6 @@ public class TicketShowActivity extends BaseActivity implements View.OnClickList
                     public void onSuccess(Object object) {
                         TicketShowResponse.Data ticketData = (TicketShowResponse.Data) object;
                         mTicketList.addAll(ticketData.list);
-                        mIsLastPage = ticketData.lastPage;
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -206,6 +212,7 @@ public class TicketShowActivity extends BaseActivity implements View.OnClickList
                                 swipeRefreshLayout.setRefreshing(false);
                             }
                         });
+                        mIsLastPage = ticketData.lastPage;
                     }
                 });
     }
@@ -349,6 +356,22 @@ public class TicketShowActivity extends BaseActivity implements View.OnClickList
                 return "zero";
             default:
                 return "";
+        }
+    }
+
+    // 得到需要提交的车次
+    private void getSubmitTicket() {
+        for (TicketShowResponse.Ticket ticket : mTicketList) {
+            if (ticket.isSelected) {
+                mTicketListSelected.add(ticket);
+            }
+        }
+    }
+
+    // 初始化提交状态
+    private void initInfo() {
+        for (TicketShowResponse.Ticket ticket : mTicketList) {
+            ticket.isSelected = false;
         }
     }
 

@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.graduation.even.graduationclient.R;
@@ -52,21 +53,20 @@ public class TicketAdapter extends RecyclerView.Adapter<TicketAdapter.MyViewHold
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
-        // 如果设置了回调，则设置点击事件
-        if (mOnItemClickListener != null) {
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    PLog.i("holder item click position = " + position);
-                    int pos = holder.getLayoutPosition();
-                    boolean isAdd = !holder.selected.isChecked();
-                    mOnItemClickListener.onItemClick(holder.itemView, pos, isAdd);
-                }
-            });
-        }
-        if(ticketList.size() == 0){
+        if (ticketList.size() == 0) {
             return;
         }
+        holder.selected.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                PLog.i("holder item checkbox click position = " + position);
+                if (isShowCheckBox) {//保证复选框存在的情况下才能添加或者删除
+                    int pos = holder.getLayoutPosition();
+                    ticketList.get(pos).isSelected = isChecked;
+                }
+            }
+        });
+
         TicketShowResponse.Ticket ticket = ticketList.get(position);
         holder.start.setText(ticket.dptStationName);
         holder.startDate.setText(ticket.dptTime);
@@ -77,8 +77,11 @@ public class TicketAdapter extends RecyclerView.Adapter<TicketAdapter.MyViewHold
         holder.price.setText(ticket.cheapestPrice);
         if (isShowCheckBox) {
             holder.selected.setVisibility(View.VISIBLE);
-        }
+        }else
+            holder.selected.setVisibility(View.GONE);
+        initInfo(holder);
         setSeats(holder, ticket);
+        setPrice(holder, ticket);
     }
 
     @Override
@@ -89,6 +92,14 @@ public class TicketAdapter extends RecyclerView.Adapter<TicketAdapter.MyViewHold
     // 设置是否显示复选框
     public void setShowCheckBox(boolean showCheckBox) {
         isShowCheckBox = showCheckBox;
+    }
+
+    // 清空所有信息，防止信息重复
+    private void initInfo(final MyViewHolder holder) {
+        holder.seatType1.setText("");
+        holder.seatType2.setText("");
+        holder.seatType3.setText("");
+        holder.seatType4.setText("");
     }
 
     // 设置座位信息
@@ -116,6 +127,39 @@ public class TicketAdapter extends RecyclerView.Adapter<TicketAdapter.MyViewHold
             setSeatInfo(ticket.seats.hardSeat, holder.seatType3, "硬座");
         }
 
+    }
+
+    // 设置最低价格
+    private void setPrice(final MyViewHolder holder, TicketShowResponse.Ticket ticket) {
+        if (ticket.seats.zero != null) {
+            holder.price.setText("￥" + String.valueOf(ticket.seats.zero.price));
+            return;
+        }
+        if (ticket.seats.two != null) {
+            holder.price.setText("￥" + String.valueOf(ticket.seats.two.price));
+            return;
+        }
+        if (ticket.seats.one != null) {
+            holder.price.setText("￥" + String.valueOf(ticket.seats.one.price));
+            return;
+        }
+        if (ticket.seats.business != null) {
+            holder.price.setText("￥" + String.valueOf(ticket.seats.business.price));
+            return;
+        }
+
+        if (ticket.seats.hardSeat != null) {
+            holder.price.setText("￥" + String.valueOf(ticket.seats.hardSeat.price));
+            return;
+        }
+        if (ticket.seats.hardSleep != null) {
+            holder.price.setText("￥" + String.valueOf(ticket.seats.hardSleep.price));
+            return;
+        }
+        if (ticket.seats.soft != null) {
+            holder.price.setText("￥" + String.valueOf(ticket.seats.soft.price));
+            return;
+        }
     }
 
     // 座位信息的UI设置

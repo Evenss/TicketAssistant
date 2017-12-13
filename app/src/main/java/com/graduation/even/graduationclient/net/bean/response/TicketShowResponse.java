@@ -1,5 +1,6 @@
 package com.graduation.even.graduationclient.net.bean.response;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -30,6 +31,8 @@ public class TicketShowResponse extends BaseResponse {
         public String interval;
         public String cheapestPrice;
         public SeatType seats;
+        @Expose
+        public boolean isSelected;
     }
 
     // 座位类别
