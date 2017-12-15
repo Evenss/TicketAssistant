@@ -15,6 +15,7 @@ import com.graduation.even.graduationclient.R;
 import com.graduation.even.graduationclient.activity.ChangePwdActivity;
 import com.graduation.even.graduationclient.activity.LoginActivity;
 import com.graduation.even.graduationclient.activity.MainActivity;
+import com.graduation.even.graduationclient.activity.OrderInfoActivity;
 import com.graduation.even.graduationclient.net.callback.NetCallBack;
 import com.graduation.even.graduationclient.net.connector.NetworkConnector;
 import com.graduation.even.graduationclient.user.UserInfo;
@@ -93,6 +94,8 @@ public class MyInfoFragment extends BaseFragment implements View.OnClickListener
                 startActivity(intent);
                 break;
             case R.id.rl_order_info:
+                intent = new Intent(getActivity(), OrderInfoActivity.class);
+                startActivity(intent);
                 break;
             case R.id.rl_set_email:
                 createEmailDialog();

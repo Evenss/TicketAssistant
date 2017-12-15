@@ -27,7 +27,7 @@ public class MyOrderResponse extends BaseResponse {
         @SerializedName("arrStationName")
         public String arrStationName;
         @SerializedName("trainNo")
-        public String trainNo;
+        public List<String> trainNo;
         @SerializedName("state") // 订单状态 0-已完成 1-票量监控中
         public int state;
         @SerializedName("startDate")

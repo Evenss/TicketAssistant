@@ -104,26 +104,26 @@ public class TicketAdapter extends RecyclerView.Adapter<TicketAdapter.MyViewHold
 
     // 设置座位信息
     private void setSeats(final MyViewHolder holder, TicketShowResponse.Ticket ticket) {
-        if (ticket.seats.business != null) {
+        if (ticket.seats.business != null && ticket.seats.business.count != -1) {
             setSeatInfo(ticket.seats.business, holder.seatType1, "商务座");
         }
-        if (ticket.seats.one != null) {
+        if (ticket.seats.one != null && ticket.seats.one.count != -1) {
             setSeatInfo(ticket.seats.one, holder.seatType2, "一等座");
         }
-        if (ticket.seats.two != null) {
+        if (ticket.seats.two != null && ticket.seats.two.count != -1) {
             setSeatInfo(ticket.seats.two, holder.seatType3, "二等座");
         }
-        if (ticket.seats.zero != null) {
+        if (ticket.seats.zero != null && ticket.seats.zero.count != -1) {
             setSeatInfo(ticket.seats.zero, holder.seatType4, "无座");
         }
 
-        if (ticket.seats.soft != null) {
+        if (ticket.seats.soft != null && ticket.seats.soft.count != -1) {
             setSeatInfo(ticket.seats.soft, holder.seatType1, "软卧");
         }
-        if (ticket.seats.hardSleep != null) {
+        if (ticket.seats.hardSleep != null && ticket.seats.hardSleep.count != -1) {
             setSeatInfo(ticket.seats.hardSleep, holder.seatType2, "硬卧");
         }
-        if (ticket.seats.hardSeat != null) {
+        if (ticket.seats.hardSeat != null && ticket.seats.hardSeat.count != -1) {
             setSeatInfo(ticket.seats.hardSeat, holder.seatType3, "硬座");
         }
 

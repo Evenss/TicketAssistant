@@ -38,22 +38,28 @@ public class OrderInfoAdapter extends RecyclerView.Adapter<OrderInfoAdapter.MyVi
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         MyOrderResponse.Order order = orderList.get(position);
-        holder.placeTv.setText(order.dptStationName + " — " + order.dptStationName);
+        holder.placeTv.setText(order.dptStationName + " — " + order.arrStationName);
         holder.priceTv.setText("￥" + String.valueOf(order.price));
+        holder.priceTv.setTextSize(20);
         String time = TimeUtil.getTimeFormatted(order.startDate, "yyyy-MM-dd HH:mm");
         holder.timeTv.setText("出发时间：" + time);
-        holder.trainNumTv.setText(order.trainNo);
+        holder.trainNumTv.setText(order.trainNo.toString());
         if (order.state == 1) {
             holder.stateTv.setText("已完成");
         } else {
             holder.stateTv.setText("票量监控中");
+            holder.priceTv.setText("");
         }
-
+        if(0 == order.price && 1 == order.state){
+            holder.priceTv.setText("订单已超期");
+            holder.priceTv.setTextSize(14);
+            holder.stateTv.setText("");
+        }
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return orderList.size();
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder {

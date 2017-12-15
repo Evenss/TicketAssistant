@@ -243,6 +243,10 @@ public class TicketShowActivity extends BaseActivity implements View.OnClickList
                         ToastUtil.showToastOnUIThread(TicketShowActivity.this, "开始监控票余量");
                         // 清空数据
                         clearData();
+                        // 跳转到我的订单界面
+                        Intent intent = new Intent(TicketShowActivity.this, OrderInfoActivity.class);
+                        startActivity(intent);
+                        finish();
                     }
                 });
     }
