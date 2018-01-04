@@ -5,7 +5,8 @@ package com.graduation.even.graduationclient.constant;
  */
 
 public class API {
-    private static String HOST = "http://192.168.3.24:8080";
+//    private static String HOST = "http://47.100.120.182:80";
+    private static String HOST = "http://192.168.10.114:8080";
     public static String URL_LOGIN = HOST + "/user/login";
     public static String URL_LOGOUT = HOST + "/user/logout";
     public static String URL_REGISTER = HOST + "/user/register";

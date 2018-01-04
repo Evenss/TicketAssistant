@@ -155,8 +155,13 @@ public class MyInfoFragment extends BaseFragment implements View.OnClickListener
                             setEmail(emailStr);
                             dialog.dismiss();
                         } else {
-                            PLog.i("email not legal");
-                            email.setError("输入邮箱不合法！");
+                            if(TextUtils.isEmpty(emailStr)){
+                                PLog.i("email is null");
+                                email.setError("邮箱地址不能为空！");
+                            }else{
+                                PLog.i("email not legal");
+                                email.setError("输入邮箱不合法！");
+                            }
                         }
                     }
                 });

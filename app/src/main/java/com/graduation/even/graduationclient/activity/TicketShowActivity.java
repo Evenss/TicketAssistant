@@ -168,6 +168,10 @@ public class TicketShowActivity extends BaseActivity implements View.OnClickList
                 }
                 break;
             case R.id.btn_submit:
+                if(mTicketList.size() == 0){
+                    ToastUtil.showToast(TicketShowActivity.this,"未设置特定班次！");
+                    return;
+                }
                 getSubmitTicket();
                 createSeatsDialog();
                 break;

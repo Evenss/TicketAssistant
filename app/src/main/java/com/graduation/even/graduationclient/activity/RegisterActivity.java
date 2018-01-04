@@ -3,6 +3,7 @@ package com.graduation.even.graduationclient.activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -89,12 +90,15 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                     phoneEt.setError("输入手机号不合法！");
                     return;
                 }
-                if (!checkCodeEt.getText().toString().equals(mCode)) {
-                    checkCodeEt.setError("验证码不正确！");
-                    return;
+                if (TextUtils.isEmpty(setPwdEt.getText().toString())) {
+                    setPwdEt.setError("密码不能为空！");
                 }
                 if (!confirmPwdEt.getText().toString().equals(pwd)) {
                     confirmPwdEt.setError("两次输入密码不一致！");
+                    return;
+                }
+                if (!checkCodeEt.getText().toString().equals(mCode)) {
+                    checkCodeEt.setError("验证码不正确！");
                     return;
                 }
                 registerAccount(phone, pwd);
