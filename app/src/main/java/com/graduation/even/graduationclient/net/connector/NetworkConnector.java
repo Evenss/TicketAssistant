@@ -79,7 +79,7 @@ public class NetworkConnector {
         call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                PLog.i("failed to login:" + e);
+                PLog.e("failed to login:" + e);
                 callBack.onNetworkError();
             }
 
@@ -87,6 +87,11 @@ public class NetworkConnector {
             public void onResponse(Call call, Response response) throws IOException {
                 String string = response.body().string();
                 PLog.i("login, response is " + string);
+                if(string.contains("<html>")){
+                    PLog.e("failed to login: server closed" );
+                    callBack.onFailed("服务器整顿中，请联系管理员！");
+                    return;
+                }
                 LoginResponse loginResponse = mGson.fromJson(string, LoginResponse.class);
                 if (loginResponse.isSuccess()) {
                     PLog.i("success to login");
@@ -95,7 +100,7 @@ public class NetworkConnector {
                             loginResponse.data.invalidTime);
                     callBack.onSuccess(null);
                 } else {
-                    PLog.i("failed to login:" + loginResponse.error);
+                    PLog.e("failed to login:" + loginResponse.error);
                     callBack.onFailed(loginResponse.error);
                 }
             }
@@ -118,7 +123,7 @@ public class NetworkConnector {
         call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                PLog.i("failed to register:" + e);
+                PLog.e("failed to register:" + e);
                 callBack.onNetworkError();
             }
 
@@ -133,7 +138,7 @@ public class NetworkConnector {
                             registerResponse.data.token, registerResponse.data.invalidTime);
                     callBack.onSuccess(null);
                 } else {
-                    PLog.i("failed to register:" + registerResponse.error);
+                    PLog.e("failed to register:" + registerResponse.error);
                     callBack.onFailed(registerResponse.error);
                 }
             }
@@ -157,7 +162,7 @@ public class NetworkConnector {
         call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                PLog.i("failed to logout:" + e);
+                PLog.e("failed to logout:" + e);
                 callBack.onNetworkError();
             }
 
@@ -170,7 +175,7 @@ public class NetworkConnector {
                     PLog.i("success to logout");
                     callBack.onSuccess(null);
                 } else {
-                    PLog.i("failed to logout:" + logoutResponse.error);
+                    PLog.e("failed to logout:" + logoutResponse.error);
                     callBack.onFailed(logoutResponse.error);
                 }
             }
@@ -201,7 +206,7 @@ public class NetworkConnector {
         call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                PLog.i("failed to set email:" + e);
+                PLog.e("failed to set email:" + e);
                 callBack.onNetworkError();
             }
 
@@ -214,7 +219,7 @@ public class NetworkConnector {
                     PLog.i("success to set email");
                     callBack.onSuccess(null);
                 } else {
-                    PLog.i("failed to set email:" + setEmailResponse.error);
+                    PLog.e("failed to set email:" + setEmailResponse.error);
                     callBack.onFailed(setEmailResponse.error);
                 }
             }
@@ -246,7 +251,7 @@ public class NetworkConnector {
         call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                PLog.i("failed to change pwd:" + e);
+                PLog.e("failed to change pwd:" + e);
                 callBack.onNetworkError();
             }
 
@@ -259,7 +264,7 @@ public class NetworkConnector {
                     PLog.i("success to change pwd");
                     callBack.onSuccess(null);
                 } else {
-                    PLog.i("failed to change pwd:" + changePwdResponse.error);
+                    PLog.e("failed to change pwd:" + changePwdResponse.error);
                     callBack.onFailed(changePwdResponse.error);
                 }
             }
@@ -285,7 +290,7 @@ public class NetworkConnector {
         call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                PLog.i("failed to get ticket list:" + e);
+                PLog.e("failed to get ticket list:" + e);
                 callBack.onNetworkError();
             }
 
@@ -293,12 +298,17 @@ public class NetworkConnector {
             public void onResponse(Call call, Response response) throws IOException {
                 String string = response.body().string();
                 PLog.i("get ticket list, response is " + string);
+                if(string.contains("<html>")){
+                    PLog.e("failed to get ticket list: server closed" );
+                    callBack.onFailed("服务器整顿中，请联系管理员！");
+                    return;
+                }
                 TicketShowResponse ticketResponse = mGson.fromJson(string, TicketShowResponse.class);
                 if (ticketResponse.isSuccess()) {
                     PLog.i("success to get ticket list");
                     callBack.onSuccess(ticketResponse.data);
                 } else {
-                    PLog.i("failed to get ticket list:" + ticketResponse.error);
+                    PLog.e("failed to get ticket list:" + ticketResponse.error);
                     callBack.onFailed(ticketResponse.error);
                 }
             }
@@ -332,7 +342,7 @@ public class NetworkConnector {
         call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                PLog.i("failed to set monitor:" + e);
+                PLog.e("failed to set monitor:" + e);
                 callBack.onNetworkError();
             }
 
@@ -345,7 +355,7 @@ public class NetworkConnector {
                     PLog.i("success to set monitor");
                     callBack.onSuccess(null);
                 } else {
-                    PLog.i("failed to set monitor:" + setMonitorResponse.error);
+                    PLog.e("failed to set monitor:" + setMonitorResponse.error);
                     callBack.onFailed(setMonitorResponse.error);
                 }
             }
@@ -377,7 +387,7 @@ public class NetworkConnector {
         call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                PLog.i("failed to get order:" + e);
+                PLog.e("failed to get order:" + e);
                 callBack.onNetworkError();
             }
 
@@ -390,7 +400,7 @@ public class NetworkConnector {
                     PLog.i("success to get order");
                     callBack.onSuccess(myOrderResponse.data);
                 } else {
-                    PLog.i("failed to get order:" + myOrderResponse.error);
+                    PLog.e("failed to get order:" + myOrderResponse.error);
                     callBack.onFailed(myOrderResponse.error);
                 }
             }
