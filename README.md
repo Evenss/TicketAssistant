@@ -1,4 +1,4 @@
-# 一文助行
+# 一文助行（Android）
 >  项目介绍
 
 ​	一款基于Android的火车票抢票APP，目前未接入支付功能，能查询票信息，对余票数量进行监控，检测到有票将会以APP通知、邮件等形式提醒用户。具体模块如下：
@@ -9,7 +9,7 @@
 * 票信息查询模块
 * 余票监控模块
 
-**PS：**服务器端详情查看另一个项目 https://github.com/Evenss/TicketServer
+ **PS：**服务器端详情查看另一个项目 https://github.com/Evenss/TicketServer
 
 > 使用技术
 
@@ -26,24 +26,24 @@
 
 * 用户模块
 
-![登录界面](C:\Users\Even\OneDrive\毕业文档\毕业论文\APP截图\登录界面.png)
+![](https://i.imgur.com/wJoovDu.png)
 
-![注册界面](C:\Users\Even\OneDrive\毕业文档\毕业论文\APP截图\注册界面.png)
+![](https://i.imgur.com/gLDzXq7.png)
 
-![登录完成界面](C:\Users\Even\OneDrive\毕业文档\毕业论文\APP截图\登录完成界面.png)
+![](https://i.imgur.com/WUXSjQf.png)
 
 * 查询模块
 
-![主界面](C:\Users\Even\OneDrive\毕业文档\毕业论文\APP截图\主界面.png)
+![](https://i.imgur.com/HZ0EOaB.png)
 
-![展示车票信息](C:\Users\Even\OneDrive\毕业文档\毕业论文\APP截图\展示车票信息.png)
+![](https://i.imgur.com/NtmVyP2.png)
 
 * 余票监控
 
-![设置监控2](C:\Users\Even\OneDrive\毕业文档\毕业论文\APP截图\设置监控2.png)
+![](https://i.imgur.com/ctkFXTV.png)
 
 * 推送模块
 
-![通知](C:\Users\Even\OneDrive\毕业文档\毕业论文\APP截图\通知.png)
+![](https://i.imgur.com/V8esccS.png)
 
-![通知-详细](C:\Users\Even\OneDrive\毕业文档\毕业论文\APP截图\通知-详细.png)
+![](https://i.imgur.com/zPA8Wqg.png)
